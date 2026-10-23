@@ -5,6 +5,7 @@ import { router } from '@kit.ArkUI';
 struct Index {
   @State message: string = 'Hello World';
   @State TEST01: router.RouterOptions = { 'url': 'pages/TEST01' }
+  @State TEST02: router.RouterOptions = { 'url': 'pages/TEST02' }
 
   build() {
     RelativeContainer() {
@@ -24,6 +25,14 @@ struct Index {
         ListItem() {
           Button("进入测试1-图片&按钮").onClick(() => {
             router.pushUrl(this.TEST01)
+          })
+            .width('50%')
+            .borderRadius(20)
+            .height(40)
+        }
+        ListItem() {
+          Button("进入测试2-数据渲染").onClick(() => {
+            router.pushUrl(this.TEST02)
           })
             .width('50%')
             .borderRadius(20)
