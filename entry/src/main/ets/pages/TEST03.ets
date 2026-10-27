@@ -1,5 +1,54 @@
 import { router } from '@kit.ArkUI';
 
+function calculateExpression(operate: string): string {
+  operate = operate.replace(/(\d+)%/g, (num) => (parseFloat(num) / 100).toString());
+
+  // Function to handle operations
+  const compute = (a: number, b: number, operator: string): number => {
+    switch (operator) {
+      case '+': return a + b;
+      case '-': return a - b;
+      case 'x': return a * b;
+      case '÷': return a / b;
+      default: throw new Error('Invalid operator');
+    }
+  };
+
+  // Handle multiplication and division first
+  const handleMulDiv = (expr: string): string => {
+    const regex = /(-?\d+(\.\d+)?)([x÷])(-?\d+(\.\d+)?)/;
+    let match : RegExpExecArray | null;
+    while ((match = regex.exec(expr)) !== null) {
+      const left = parseFloat(match[1]);
+      const operator = match[3];
+      const right = parseFloat(match[4]);
+      const result = compute(left, right, operator);
+      expr = expr.replace(match[0], result.toString());
+    }
+    return expr;
+  };
+
+  // Handle addition and subtraction
+  const handleAddSub = (expr: string): string => {
+    const regex = /(-?\d+(\.\d+)?)([+\-])(-?\d+(\.\d+)?)/;
+    let match : RegExpExecArray | null;
+    while ((match = regex.exec(expr)) !== null) {
+      const left = parseFloat(match[1]);
+      const operator = match[3];
+      const right = parseFloat(match[4]);
+      const result = compute(left, right, operator);
+      expr = expr.replace(match[0], result.toString());
+    }
+    return expr;
+  };
+
+  // Process the expression
+  let result = handleMulDiv(operate);
+  result = handleAddSub(result);
+
+  return result;
+}
+
 @Entry
 @Component
 struct TEST03 {
@@ -85,6 +134,9 @@ struct TEST03 {
                 .fontSize(30)
                 .width(65)
                 .height(65)
+                .onClick(()=>{
+                  this.OPERATE = this.OPERATE + '÷'
+                })
             }.width('20%').height(70)
           }
           .width('90%')
@@ -101,6 +153,10 @@ struct TEST03 {
                 .fontSize(23)
                 .width(65)
                 .height(65)
+                .onClick(()=>{
+                  this.OPERATE = this.OPERATE + '7'
+                  this.ANSWER = calculateExpression(this.OPERATE)
+                })
             }.width('20%').height(70)
 
             Column() {
@@ -111,6 +167,10 @@ struct TEST03 {
                 .fontSize(23)
                 .width(65)
                 .height(65)
+                .onClick(()=>{
+                  this.OPERATE = this.OPERATE + '8'
+                  this.ANSWER = calculateExpression(this.OPERATE)
+                })
             }.width('20%').height(70)
 
             Column() {
@@ -121,6 +181,10 @@ struct TEST03 {
                 .fontSize(23)
                 .width(65)
                 .height(65)
+                .onClick(()=>{
+                  this.OPERATE = this.OPERATE + '9'
+                  this.ANSWER = calculateExpression(this.OPERATE)
+                })
             }.width('20%').height(70)
 
             Column() {
@@ -131,6 +195,9 @@ struct TEST03 {
                 .fontSize(23)
                 .width(65)
                 .height(65)
+                .onClick(()=>{
+                  this.OPERATE = this.OPERATE + 'x'
+                })
             }.width('20%').height(70)
           }
           .width('90%')
@@ -147,6 +214,10 @@ struct TEST03 {
                 .fontSize(23)
                 .width(65)
                 .height(65)
+                .onClick(()=>{
+                  this.OPERATE = this.OPERATE + '4'
+                  this.ANSWER = calculateExpression(this.OPERATE)
+                })
             }.width('20%').height(70)
 
             Column() {
@@ -157,6 +228,10 @@ struct TEST03 {
                 .fontSize(23)
                 .width(65)
                 .height(65)
+                .onClick(()=>{
+                  this.OPERATE = this.OPERATE + '5'
+                  this.ANSWER = calculateExpression(this.OPERATE)
+                })
             }.width('20%').height(70)
 
             Column() {
@@ -167,6 +242,10 @@ struct TEST03 {
                 .fontSize(23)
                 .width(65)
                 .height(65)
+                .onClick(()=>{
+                  this.OPERATE = this.OPERATE + '6'
+                  this.ANSWER = calculateExpression(this.OPERATE)
+                })
             }.width('20%').height(70)
 
             Column() {
@@ -177,6 +256,9 @@ struct TEST03 {
                 .fontSize(23)
                 .width(65)
                 .height(65)
+                .onClick(()=>{
+                  this.OPERATE = this.OPERATE + '-'
+                })
             }.width('20%').height(70)
           }
           .width('90%')
@@ -193,6 +275,10 @@ struct TEST03 {
                 .fontSize(23)
                 .width(65)
                 .height(65)
+                .onClick(()=>{
+                  this.OPERATE = this.OPERATE + '1'
+                  this.ANSWER = calculateExpression(this.OPERATE)
+                })
             }.width('20%').height(70)
 
             Column() {
@@ -203,6 +289,10 @@ struct TEST03 {
                 .fontSize(23)
                 .width(65)
                 .height(65)
+                .onClick(()=>{
+                  this.OPERATE = this.OPERATE + '2'
+                  this.ANSWER = calculateExpression(this.OPERATE)
+                })
             }.width('20%').height(70)
 
             Column() {
@@ -213,6 +303,10 @@ struct TEST03 {
                 .fontSize(23)
                 .width(65)
                 .height(65)
+                .onClick(()=>{
+                  this.OPERATE = this.OPERATE + '3'
+                  this.ANSWER = calculateExpression(this.OPERATE)
+                })
             }.width('20%').height(70)
 
             Column() {
@@ -223,6 +317,9 @@ struct TEST03 {
                 .fontSize(42)
                 .width(65)
                 .height(65)
+                .onClick(()=>{
+                  this.OPERATE = this.OPERATE + '+'
+                })
             }.width('20%').height(70)
           }
           .width('90%')
@@ -239,6 +336,10 @@ struct TEST03 {
                 .fontSize(23)
                 .width(65)
                 .height(65)
+                .onClick(()=>{
+                  this.OPERATE = this.OPERATE + '00'
+                  this.ANSWER = calculateExpression(this.OPERATE)
+                })
             }.width('20%').height(70)
 
             Column() {
@@ -249,6 +350,10 @@ struct TEST03 {
                 .fontSize(23)
                 .width(65)
                 .height(65)
+                .onClick(()=>{
+                  this.OPERATE = this.OPERATE + '0'
+                  this.ANSWER = calculateExpression(this.OPERATE)
+                })
             }.width('20%').height(70)
 
             Column() {
@@ -259,6 +364,9 @@ struct TEST03 {
                 .fontSize(23)
                 .width(65)
                 .height(65)
+                .onClick(()=>{
+                  this.OPERATE = this.OPERATE + '.'
+                })
             }.width('20%').height(70)
 
             Column() {
@@ -269,6 +377,9 @@ struct TEST03 {
                 .fontSize(42)
                 .width(65)
                 .height(65)
+                .onClick(()=>{
+                  this.ANSWER = calculateExpression(this.OPERATE)
+                })
             }.width('20%').height(70)
           }
           .width('90%')
