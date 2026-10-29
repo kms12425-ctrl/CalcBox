@@ -1,5 +1,9 @@
 import { router } from '@kit.ArkUI';
 
+function isLastCharNotDigit(operate: string): boolean {
+  return !(/\d$/.test(operate) || /%$/.test(operate));
+}
+
 function calculateExpression(operate: string): string {
   operate = operate.replace(/(\d+)%/g, (num) => (parseFloat(num) / 100).toString());
 
@@ -104,6 +108,10 @@ struct TEST03 {
                 .fontSize(23)
                 .width(65)
                 .height(65)
+                .onClick(()=>{
+                  this.OPERATE = ''
+                  this.ANSWER = ''
+                })
             }.width('20%').height(70)
 
             Column() {
@@ -114,6 +122,12 @@ struct TEST03 {
                 .fontSize(23)
                 .width(65)
                 .height(65)
+                .onClick(()=>{
+                  if (!isLastCharNotDigit(this.OPERATE)) {
+                    this.OPERATE = this.OPERATE + '%'
+                    this.ANSWER = calculateExpression(this.OPERATE)
+                  }
+                })
             }.width('20%').height(70)
 
             Column() {
@@ -124,6 +138,13 @@ struct TEST03 {
                 .fontSize(27)
                 .width(65)
                 .height(65)
+                .onClick(()=>{
+                  if (this.OPERATE) {
+                    this.OPERATE = this.OPERATE.slice(0, -1);
+                  }
+                  this.ANSWER = calculateExpression(this.OPERATE)
+                  console.info('Button onClick')
+                })
             }.width('20%').height(70)
 
             Column() {
@@ -135,7 +156,9 @@ struct TEST03 {
                 .width(65)
                 .height(65)
                 .onClick(()=>{
-                  this.OPERATE = this.OPERATE + '÷'
+                  if (!isLastCharNotDigit(this.OPERATE)) {
+                    this.OPERATE = this.OPERATE + '÷'
+                  }
                 })
             }.width('20%').height(70)
           }
@@ -196,7 +219,9 @@ struct TEST03 {
                 .width(65)
                 .height(65)
                 .onClick(()=>{
-                  this.OPERATE = this.OPERATE + 'x'
+                  if (!isLastCharNotDigit(this.OPERATE)) {
+                    this.OPERATE = this.OPERATE + 'x'
+                  }
                 })
             }.width('20%').height(70)
           }
@@ -257,7 +282,9 @@ struct TEST03 {
                 .width(65)
                 .height(65)
                 .onClick(()=>{
-                  this.OPERATE = this.OPERATE + '-'
+                  if (!(/-$/.test(this.OPERATE))) {
+                    this.OPERATE = this.OPERATE + '-'
+                  }
                 })
             }.width('20%').height(70)
           }
@@ -318,7 +345,9 @@ struct TEST03 {
                 .width(65)
                 .height(65)
                 .onClick(()=>{
-                  this.OPERATE = this.OPERATE + '+'
+                  if (!isLastCharNotDigit(this.OPERATE)) {
+                    this.OPERATE = this.OPERATE + '+'
+                  }
                 })
             }.width('20%').height(70)
           }
@@ -365,7 +394,9 @@ struct TEST03 {
                 .width(65)
                 .height(65)
                 .onClick(()=>{
-                  this.OPERATE = this.OPERATE + '.'
+                  if (!isLastCharNotDigit(this.OPERATE)) {
+                    this.OPERATE = this.OPERATE + '.'
+                  }
                 })
             }.width('20%').height(70)
 
