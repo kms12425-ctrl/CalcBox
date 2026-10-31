@@ -1,7 +1,18 @@
+import { curves } from '@kit.ArkUI';
 import { router } from '@kit.ArkUI';
 
 function isLastCharNotDigit(operate: string): boolean {
   return !(/\d$/.test(operate) || /%$/.test(operate));
+}
+
+function reset_animate(context: TEST03): void{
+  animateTo({ curve: curves.springMotion() }, () => {
+    context.answer_animate = false;
+    context.front_size_op = context.answer_animate ? 30 : 50;
+    context.front_size_ans = context.answer_animate ? 50 : 30;
+    context.front_color_op = context.answer_animate ? 0x9fa39a : 0x000000;
+    context.front_color_ans = context.answer_animate ? 0x000000 : 0x9fa39a;
+  })
 }
 
 function calculateExpression(operate: string): string {
@@ -58,6 +69,11 @@ function calculateExpression(operate: string): string {
 struct TEST03 {
   @State OPERATE: string = '';
   @State ANSWER: string = '';
+  @State front_size_op: number = 50;
+  @State front_color_op: number = 0x000000;
+  @State front_size_ans: number = 30;
+  @State front_color_ans: number = 0x9fa39a;
+  @State answer_animate: boolean = false;
   @State answer_num: number = 0;
   @State the1_num: number = 0;
   @State num_count: number = 1;
@@ -82,7 +98,7 @@ struct TEST03 {
           }.width('95%')
           Row().width('90%').height(70)
           Row({}) {
-            Text(this.OPERATE).fontSize(50).fontWeight(FontWeight.Medium).fontColor(0x000000)
+            Text(this.OPERATE).fontSize(this.front_size_op).fontWeight(FontWeight.Medium).fontColor(this.front_color_op)
           }
           .width('90%')
           .height(70)
@@ -90,7 +106,7 @@ struct TEST03 {
           .justifyContent(FlexAlign.End)
 
           Row({}) {
-            Text(this.ANSWER).fontSize(30).fontWeight(FontWeight.Medium).fontColor(0x9fa39a)
+            Text(this.ANSWER).fontSize(this.front_size_ans).fontWeight(FontWeight.Medium).fontColor(this.front_color_ans)
           }
           .width('90%')
           .height(70)
@@ -109,6 +125,7 @@ struct TEST03 {
                 .width(65)
                 .height(65)
                 .onClick(()=>{
+                  reset_animate(this)
                   this.OPERATE = ''
                   this.ANSWER = ''
                 })
@@ -123,6 +140,7 @@ struct TEST03 {
                 .width(65)
                 .height(65)
                 .onClick(()=>{
+                  reset_animate(this)
                   if (!isLastCharNotDigit(this.OPERATE)) {
                     this.OPERATE = this.OPERATE + '%'
                     this.ANSWER = calculateExpression(this.OPERATE)
@@ -139,6 +157,7 @@ struct TEST03 {
                 .width(65)
                 .height(65)
                 .onClick(()=>{
+                  reset_animate(this)
                   if (this.OPERATE) {
                     this.OPERATE = this.OPERATE.slice(0, -1);
                   }
@@ -156,6 +175,7 @@ struct TEST03 {
                 .width(65)
                 .height(65)
                 .onClick(()=>{
+                  reset_animate(this)
                   if (!isLastCharNotDigit(this.OPERATE)) {
                     this.OPERATE = this.OPERATE + '÷'
                   }
@@ -177,6 +197,7 @@ struct TEST03 {
                 .width(65)
                 .height(65)
                 .onClick(()=>{
+                  reset_animate(this)
                   this.OPERATE = this.OPERATE + '7'
                   this.ANSWER = calculateExpression(this.OPERATE)
                 })
@@ -191,6 +212,7 @@ struct TEST03 {
                 .width(65)
                 .height(65)
                 .onClick(()=>{
+                  reset_animate(this)
                   this.OPERATE = this.OPERATE + '8'
                   this.ANSWER = calculateExpression(this.OPERATE)
                 })
@@ -205,6 +227,7 @@ struct TEST03 {
                 .width(65)
                 .height(65)
                 .onClick(()=>{
+                  reset_animate(this)
                   this.OPERATE = this.OPERATE + '9'
                   this.ANSWER = calculateExpression(this.OPERATE)
                 })
@@ -219,6 +242,7 @@ struct TEST03 {
                 .width(65)
                 .height(65)
                 .onClick(()=>{
+                  reset_animate(this)
                   if (!isLastCharNotDigit(this.OPERATE)) {
                     this.OPERATE = this.OPERATE + 'x'
                   }
@@ -240,6 +264,7 @@ struct TEST03 {
                 .width(65)
                 .height(65)
                 .onClick(()=>{
+                  reset_animate(this)
                   this.OPERATE = this.OPERATE + '4'
                   this.ANSWER = calculateExpression(this.OPERATE)
                 })
@@ -254,6 +279,7 @@ struct TEST03 {
                 .width(65)
                 .height(65)
                 .onClick(()=>{
+                  reset_animate(this)
                   this.OPERATE = this.OPERATE + '5'
                   this.ANSWER = calculateExpression(this.OPERATE)
                 })
@@ -268,6 +294,7 @@ struct TEST03 {
                 .width(65)
                 .height(65)
                 .onClick(()=>{
+                  reset_animate(this)
                   this.OPERATE = this.OPERATE + '6'
                   this.ANSWER = calculateExpression(this.OPERATE)
                 })
@@ -282,6 +309,7 @@ struct TEST03 {
                 .width(65)
                 .height(65)
                 .onClick(()=>{
+                  reset_animate(this)
                   if (!(/-$/.test(this.OPERATE))) {
                     this.OPERATE = this.OPERATE + '-'
                   }
@@ -303,6 +331,7 @@ struct TEST03 {
                 .width(65)
                 .height(65)
                 .onClick(()=>{
+                  reset_animate(this)
                   this.OPERATE = this.OPERATE + '1'
                   this.ANSWER = calculateExpression(this.OPERATE)
                 })
@@ -317,6 +346,7 @@ struct TEST03 {
                 .width(65)
                 .height(65)
                 .onClick(()=>{
+                  reset_animate(this)
                   this.OPERATE = this.OPERATE + '2'
                   this.ANSWER = calculateExpression(this.OPERATE)
                 })
@@ -331,6 +361,7 @@ struct TEST03 {
                 .width(65)
                 .height(65)
                 .onClick(()=>{
+                  reset_animate(this)
                   this.OPERATE = this.OPERATE + '3'
                   this.ANSWER = calculateExpression(this.OPERATE)
                 })
@@ -345,6 +376,7 @@ struct TEST03 {
                 .width(65)
                 .height(65)
                 .onClick(()=>{
+                  reset_animate(this)
                   if (!isLastCharNotDigit(this.OPERATE)) {
                     this.OPERATE = this.OPERATE + '+'
                   }
@@ -366,6 +398,7 @@ struct TEST03 {
                 .width(65)
                 .height(65)
                 .onClick(()=>{
+                  reset_animate(this)
                   this.OPERATE = this.OPERATE + '00'
                   this.ANSWER = calculateExpression(this.OPERATE)
                 })
@@ -380,6 +413,7 @@ struct TEST03 {
                 .width(65)
                 .height(65)
                 .onClick(()=>{
+                  reset_animate(this)
                   this.OPERATE = this.OPERATE + '0'
                   this.ANSWER = calculateExpression(this.OPERATE)
                 })
@@ -394,6 +428,7 @@ struct TEST03 {
                 .width(65)
                 .height(65)
                 .onClick(()=>{
+                  reset_animate(this)
                   if (!isLastCharNotDigit(this.OPERATE)) {
                     this.OPERATE = this.OPERATE + '.'
                   }
@@ -409,7 +444,13 @@ struct TEST03 {
                 .width(65)
                 .height(65)
                 .onClick(()=>{
-                  this.ANSWER = calculateExpression(this.OPERATE)
+                  animateTo({ curve: curves.springMotion() }, () => {
+                    this.answer_animate = true;
+                    this.front_size_op = this.answer_animate ? 30 : 50;
+                    this.front_size_ans = this.answer_animate ? 50 : 30;
+                    this.front_color_op = this.answer_animate ? 0x9fa39a : 0x000000;
+                    this.front_color_ans = this.answer_animate ? 0x000000 : 0x9fa39a;
+                  })
                 })
             }.width('20%').height(70)
           }
