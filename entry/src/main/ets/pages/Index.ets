@@ -47,6 +47,46 @@ struct Index {
             .borderRadius(20)
             .height(40)
         }
+        ListItem() {
+          Button("进入测试4").onClick(() => {
+            router.pushUrl(this.TEST01)
+          })
+            .width('50%')
+            .borderRadius(20)
+            .height(40)
+        }
+        ListItem() {
+          Button("进入测试5").onClick(() => {
+            router.pushUrl(this.TEST01)
+          })
+            .width('50%')
+            .borderRadius(20)
+            .height(40)
+        }
+        ListItem() {
+          Button("进入测试6").onClick(() => {
+            router.pushUrl(this.TEST01)
+          })
+            .width('50%')
+            .borderRadius(20)
+            .height(40)
+        }
+        ListItem() {
+          Button("进入测试7").onClick(() => {
+            router.pushUrl(this.TEST01)
+          })
+            .width('50%')
+            .borderRadius(20)
+            .height(40)
+        }
+        ListItem() {
+          Button("进入测试8").onClick(() => {
+            router.pushUrl(this.TEST01)
+          })
+            .width('50%')
+            .borderRadius(20)
+            .height(40)
+        }
       }
       .alignListItem(ListItemAlign.Center)
     }
