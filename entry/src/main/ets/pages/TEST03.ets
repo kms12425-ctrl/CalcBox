@@ -1,18 +1,51 @@
 import { curves } from '@kit.ArkUI';
 import { router } from '@kit.ArkUI';
 
-function isLastCharNotDigit(operate: string): boolean {
-  return !(/\d$/.test(operate) || /%$/.test(operate));
+/**
+ * 按键类别，决定点击后走哪条处理分支。
+ */
+enum KeyKind {
+  Digit,
+  Operator,
+  Func,
+  Equals
 }
 
-function reset_animate(context: TEST03): void{
-  animateTo({ curve: curves.springMotion() }, () => {
-    context.answer_animate = false;
-    context.front_size_op = context.answer_animate ? 30 : 50;
-    context.front_size_ans = context.answer_animate ? 50 : 30;
-    context.front_color_op = context.answer_animate ? 0x9fa39a : 0x000000;
-    context.front_color_ans = context.answer_animate ? 0x000000 : 0x9fa39a;
-  })
+/**
+ * 一个按键的全部描述：文案、类别、要追加的字符以及配色。
+ * 键盘布局与样式都由此数据推导，新增按键只需往 rows 里加一项。
+ */
+class KeyDef {
+  label: string = '';
+  kind: KeyKind = KeyKind.Digit;
+  value: string = '';
+  bgColor: number = 0xfffef9;
+  fontColor: number = 0x000000;
+  weight: FontWeight = FontWeight.Medium;
+  fontSize: number = 23;
+}
+
+const BG_DIGIT: number = 0xfffef9;
+const BG_FUNC: number = 0xcdd1d3;
+const BG_EQUAL: number = 0xfb8b05;
+
+function makeKey(label: string, kind: KeyKind, value: string, bgColor: number,
+                 fontSize: number, weight: FontWeight): KeyDef {
+  const key: KeyDef = new KeyDef();
+  key.label = label;
+  key.kind = kind;
+  key.value = value;
+  key.bgColor = bgColor;
+  key.fontSize = fontSize;
+  key.weight = weight;
+  if (kind === KeyKind.Equals) {
+    key.fontColor = 0xffffff;
+  }
+  return key;
+}
+
+function isLastCharNotDigit(operate: string): boolean {
+  return !(/\d$/.test(operate) || /%$/.test(operate));
 }
 
 function calculateExpression(operate: string): string {
@@ -67,406 +100,203 @@ function calculateExpression(operate: string): string {
 @Entry
 @Component
 struct TEST03 {
-  @State OPERATE: string = '';
-  @State ANSWER: string = '';
-  @State front_size_op: number = 50;
-  @State front_color_op: number = 0x000000;
-  @State front_size_ans: number = 30;
-  @State front_color_ans: number = 0x9fa39a;
-  @State answer_animate: boolean = false;
-  @State answer_num: number = 0;
-  @State the1_num: number = 0;
-  @State num_count: number = 1;
-  @State Index: router.RouterOptions = { 'url': 'pages/Index' };
+  @State operate: string = '';
+  @State answer: string = '';
+  @State frontSizeOp: number = 50;
+  @State frontColorOp: number = 0x000000;
+  @State frontSizeAns: number = 30;
+  @State frontColorAns: number = 0x9fa39a;
+  @State answerAnimate: boolean = false;
+  @State indexPage: router.RouterOptions = { 'url': 'pages/Index' };
 
+  /**
+   * 键盘布局：5 行 × 4 列，与界面一一对应。
+   */
+  private rows: KeyDef[][] = [
+    [
+      makeKey('AC', KeyKind.Func, 'AC', BG_FUNC, 23, FontWeight.Bold),
+      makeKey('%', KeyKind.Func, '%', BG_FUNC, 23, FontWeight.Bold),
+      makeKey('<=', KeyKind.Func, 'BACK', BG_FUNC, 27, FontWeight.Bold),
+      makeKey('÷', KeyKind.Operator, '÷', BG_FUNC, 30, FontWeight.Bold)
+    ],
+    [
+      makeKey('7', KeyKind.Digit, '7', BG_DIGIT, 23, FontWeight.Medium),
+      makeKey('8', KeyKind.Digit, '8', BG_DIGIT, 23, FontWeight.Medium),
+      makeKey('9', KeyKind.Digit, '9', BG_DIGIT, 23, FontWeight.Medium),
+      makeKey('X', KeyKind.Operator, 'x', BG_FUNC, 23, FontWeight.Bold)
+    ],
+    [
+      makeKey('4', KeyKind.Digit, '4', BG_DIGIT, 23, FontWeight.Medium),
+      makeKey('5', KeyKind.Digit, '5', BG_DIGIT, 23, FontWeight.Medium),
+      makeKey('6', KeyKind.Digit, '6', BG_DIGIT, 23, FontWeight.Medium),
+      makeKey('一', KeyKind.Operator, '-', BG_FUNC, 23, FontWeight.Bold)
+    ],
+    [
+      makeKey('1', KeyKind.Digit, '1', BG_DIGIT, 23, FontWeight.Medium),
+      makeKey('2', KeyKind.Digit, '2', BG_DIGIT, 23, FontWeight.Medium),
+      makeKey('3', KeyKind.Digit, '3', BG_DIGIT, 23, FontWeight.Medium),
+      makeKey('+', KeyKind.Operator, '+', BG_FUNC, 42, FontWeight.Regular)
+    ],
+    [
+      makeKey('00', KeyKind.Digit, '00', BG_DIGIT, 23, FontWeight.Medium),
+      makeKey('0', KeyKind.Digit, '0', BG_DIGIT, 23, FontWeight.Medium),
+      makeKey('.', KeyKind.Digit, '.', BG_DIGIT, 23, FontWeight.Medium),
+      makeKey('=', KeyKind.Equals, '=', BG_EQUAL, 42, FontWeight.Regular)
+    ]
+  ];
+
+  /**
+   * 从“结果展示态”复位到“输入态”：算式恢复大字黑色，结果恢复小字灰色。
+   */
+  private resetAnimate(): void {
+    this.getUIContext().animateTo({ curve: curves.springMotion() }, () => {
+      this.answerAnimate = false;
+      this.frontSizeOp = this.answerAnimate ? 30 : 50;
+      this.frontSizeAns = this.answerAnimate ? 50 : 30;
+      this.frontColorOp = this.answerAnimate ? 0x9fa39a : 0x000000;
+      this.frontColorAns = this.answerAnimate ? 0x000000 : 0x9fa39a;
+    })
+  }
+
+  /**
+   * 按下“=”：把视觉重心从算式切到结果。
+   */
+  private showAnswerAnimate(): void {
+    this.getUIContext().animateTo({ curve: curves.springMotion() }, () => {
+      this.answerAnimate = true;
+      this.frontSizeOp = this.answerAnimate ? 30 : 50;
+      this.frontSizeAns = this.answerAnimate ? 50 : 30;
+      this.frontColorOp = this.answerAnimate ? 0x9fa39a : 0x000000;
+      this.frontColorAns = this.answerAnimate ? 0x000000 : 0x9fa39a;
+    })
+  }
+
+  private onFunc(action: string): void {
+    this.resetAnimate();
+    if (action === 'AC') {
+      this.operate = '';
+      this.answer = '';
+    } else if (action === '%') {
+      if (!isLastCharNotDigit(this.operate)) {
+        this.operate = this.operate + '%';
+        this.answer = calculateExpression(this.operate);
+      }
+    } else if (action === 'BACK') {
+      if (this.operate) {
+        this.operate = this.operate.slice(0, -1);
+      }
+      this.answer = calculateExpression(this.operate);
+    }
+  }
+
+  private onKey(key: KeyDef): void {
+    switch (key.kind) {
+      case KeyKind.Digit:
+        this.resetAnimate();
+        if (key.value === '.') {
+          if (!isLastCharNotDigit(this.operate)) {
+            this.operate = this.operate + '.';
+          }
+        } else {
+          this.operate = this.operate + key.value;
+          this.answer = calculateExpression(this.operate);
+        }
+        break;
+      case KeyKind.Operator:
+        this.resetAnimate();
+        if (key.value === '-') {
+          if (!(/-$/.test(this.operate))) {
+            this.operate = this.operate + '-';
+          }
+        } else if (!isLastCharNotDigit(this.operate)) {
+          this.operate = this.operate + key.value;
+        }
+        break;
+      case KeyKind.Func:
+        this.onFunc(key.value);
+        break;
+      case KeyKind.Equals:
+        this.showAnswerAnimate();
+        break;
+      default:
+        break;
+    }
+  }
+
+  @Builder
+  KeyButton(key: KeyDef) {
+    Button(key.label, { type: ButtonType.Circle, stateEffect: true })
+      .backgroundColor(key.bgColor)
+      .fontColor(key.fontColor)
+      .fontWeight(key.weight)
+      .fontSize(key.fontSize)
+      .width(65)
+      .height(65)
+      .onClick(() => {
+        this.onKey(key);
+      })
+  }
+
+  @Builder
+  HeaderArea() {
+    Column({ space: 5 }) {
+      Row() {
+        Button('<', { type: ButtonType.Normal, stateEffect: true })
+          .width(50)
+          .height(30)
+          .fontSize(15)
+          .borderRadius(8)
+          .backgroundColor(0xF55A42)
+          .onClick(() => {
+            this.getUIContext().getRouter().pushUrl(this.indexPage);
+          })
+        Text('Calculator').fontSize(30).fontColor(0xc1b2a3).width('90%')
+      }.width('95%')
+
+      Row().width('90%').height(70)
+
+      Row() {
+        Text(this.operate)
+          .fontSize(this.frontSizeOp)
+          .fontWeight(FontWeight.Medium)
+          .fontColor(this.frontColorOp)
+      }
+      .width('90%')
+      .height(70)
+      .justifyContent(FlexAlign.End)
+
+      Row() {
+        Text(this.answer)
+          .fontSize(this.frontSizeAns)
+          .fontWeight(FontWeight.Medium)
+          .fontColor(this.frontColorAns)
+      }
+      .width('90%')
+      .height(70)
+      .justifyContent(FlexAlign.End)
+    }
+  }
 
   build() {
     RelativeContainer() {
       Column({ space: 20 }) {
-        Column({ space: 5 }) {
-          Row({}) {
-          Button('<', { type: ButtonType.Normal, stateEffect: true })
-            .width(50)
-            .height(30)
-            .fontSize(15)
-            .borderRadius(8)
-            .backgroundColor(0xF55A42)
-            .onClick(()=>{
-              router.pushUrl(this.Index)
-            })
-          Text('Calculator').fontSize(30).fontColor(0xc1b2a3).width('90%');
-          }.width('95%')
-          Row().width('90%').height(70)
-          Row({}) {
-            Text(this.OPERATE).fontSize(this.front_size_op).fontWeight(FontWeight.Medium).fontColor(this.front_color_op)
-          }
-          .width('90%')
-          .height(70)
-          .id('OPERATE_ROW')
-          .justifyContent(FlexAlign.End)
-
-          Row({}) {
-            Text(this.ANSWER).fontSize(this.front_size_ans).fontWeight(FontWeight.Medium).fontColor(this.front_color_ans)
-          }
-          .width('90%')
-          .height(70)
-          .id('ANSWER_ROW')
-          .justifyContent(FlexAlign.End)
-        }
+        this.HeaderArea()
 
         Column({ space: 15 }) {
-          Row({}) {
-            Column() {
-              Button('AC', { type: ButtonType.Circle, stateEffect: true })
-                .backgroundColor(0xcdd1d3)
-                .fontColor(Color.Black)
-                .fontWeight(FontWeight.Bold)
-                .fontSize(23)
-                .width(65)
-                .height(65)
-                .onClick(()=>{
-                  reset_animate(this)
-                  this.OPERATE = ''
-                  this.ANSWER = ''
-                })
-            }.width('20%').height(70)
-
-            Column() {
-              Button('%', { type: ButtonType.Circle, stateEffect: true })
-                .backgroundColor(0xcdd1d3)
-                .fontColor(Color.Black)
-                .fontWeight(FontWeight.Bold)
-                .fontSize(23)
-                .width(65)
-                .height(65)
-                .onClick(()=>{
-                  reset_animate(this)
-                  if (!isLastCharNotDigit(this.OPERATE)) {
-                    this.OPERATE = this.OPERATE + '%'
-                    this.ANSWER = calculateExpression(this.OPERATE)
-                  }
-                })
-            }.width('20%').height(70)
-
-            Column() {
-              Button('<=', { type: ButtonType.Circle, stateEffect: true })
-                .backgroundColor(0xcdd1d3)
-                .fontColor(Color.Black)
-                .fontWeight(FontWeight.Bold)
-                .fontSize(27)
-                .width(65)
-                .height(65)
-                .onClick(()=>{
-                  reset_animate(this)
-                  if (this.OPERATE) {
-                    this.OPERATE = this.OPERATE.slice(0, -1);
-                  }
-                  this.ANSWER = calculateExpression(this.OPERATE)
-                  console.info('Button onClick')
-                })
-            }.width('20%').height(70)
-
-            Column() {
-              Button('÷', { type: ButtonType.Circle, stateEffect: true })
-                .backgroundColor(0xcdd1d3)
-                .fontColor(Color.Black)
-                .fontWeight(FontWeight.Bold)
-                .fontSize(30)
-                .width(65)
-                .height(65)
-                .onClick(()=>{
-                  reset_animate(this)
-                  if (!isLastCharNotDigit(this.OPERATE)) {
-                    this.OPERATE = this.OPERATE + '÷'
-                  }
-                })
-            }.width('20%').height(70)
-          }
-          .width('90%')
-          .height(70)
-          .id('OPERATE')
-          .justifyContent(FlexAlign.SpaceAround)
-
-          Row({}) {
-            Column() {
-              Button('7', { type: ButtonType.Circle, stateEffect: true })
-                .backgroundColor(0xfffef9)
-                .fontColor(Color.Black)
-                .fontWeight(FontWeight.Medium)
-                .fontSize(23)
-                .width(65)
-                .height(65)
-                .onClick(()=>{
-                  reset_animate(this)
-                  this.OPERATE = this.OPERATE + '7'
-                  this.ANSWER = calculateExpression(this.OPERATE)
-                })
-            }.width('20%').height(70)
-
-            Column() {
-              Button('8', { type: ButtonType.Circle, stateEffect: true })
-                .backgroundColor(0xfffef9)
-                .fontColor(Color.Black)
-                .fontWeight(FontWeight.Medium)
-                .fontSize(23)
-                .width(65)
-                .height(65)
-                .onClick(()=>{
-                  reset_animate(this)
-                  this.OPERATE = this.OPERATE + '8'
-                  this.ANSWER = calculateExpression(this.OPERATE)
-                })
-            }.width('20%').height(70)
-
-            Column() {
-              Button('9', { type: ButtonType.Circle, stateEffect: true })
-                .backgroundColor(0xfffef9)
-                .fontColor(Color.Black)
-                .fontWeight(FontWeight.Medium)
-                .fontSize(23)
-                .width(65)
-                .height(65)
-                .onClick(()=>{
-                  reset_animate(this)
-                  this.OPERATE = this.OPERATE + '9'
-                  this.ANSWER = calculateExpression(this.OPERATE)
-                })
-            }.width('20%').height(70)
-
-            Column() {
-              Button('X', { type: ButtonType.Circle, stateEffect: true })
-                .backgroundColor(0xcdd1d3)
-                .fontColor(Color.Black)
-                .fontWeight(FontWeight.Bold)
-                .fontSize(23)
-                .width(65)
-                .height(65)
-                .onClick(()=>{
-                  reset_animate(this)
-                  if (!isLastCharNotDigit(this.OPERATE)) {
-                    this.OPERATE = this.OPERATE + 'x'
-                  }
-                })
-            }.width('20%').height(70)
-          }
-          .width('90%')
-          .height(70)
-          .id('OPERATE')
-          .justifyContent(FlexAlign.SpaceAround)
-
-          Row({}) {
-            Column() {
-              Button('4', { type: ButtonType.Circle, stateEffect: true })
-                .backgroundColor(0xfffef9)
-                .fontColor(Color.Black)
-                .fontWeight(FontWeight.Medium)
-                .fontSize(23)
-                .width(65)
-                .height(65)
-                .onClick(()=>{
-                  reset_animate(this)
-                  this.OPERATE = this.OPERATE + '4'
-                  this.ANSWER = calculateExpression(this.OPERATE)
-                })
-            }.width('20%').height(70)
-
-            Column() {
-              Button('5', { type: ButtonType.Circle, stateEffect: true })
-                .backgroundColor(0xfffef9)
-                .fontColor(Color.Black)
-                .fontWeight(FontWeight.Medium)
-                .fontSize(23)
-                .width(65)
-                .height(65)
-                .onClick(()=>{
-                  reset_animate(this)
-                  this.OPERATE = this.OPERATE + '5'
-                  this.ANSWER = calculateExpression(this.OPERATE)
-                })
-            }.width('20%').height(70)
-
-            Column() {
-              Button('6', { type: ButtonType.Circle, stateEffect: true })
-                .backgroundColor(0xfffef9)
-                .fontColor(Color.Black)
-                .fontWeight(FontWeight.Medium)
-                .fontSize(23)
-                .width(65)
-                .height(65)
-                .onClick(()=>{
-                  reset_animate(this)
-                  this.OPERATE = this.OPERATE + '6'
-                  this.ANSWER = calculateExpression(this.OPERATE)
-                })
-            }.width('20%').height(70)
-
-            Column() {
-              Button('一', { type: ButtonType.Circle, stateEffect: true })
-                .backgroundColor(0xcdd1d3)
-                .fontColor(Color.Black)
-                .fontWeight(FontWeight.Bold)
-                .fontSize(23)
-                .width(65)
-                .height(65)
-                .onClick(()=>{
-                  reset_animate(this)
-                  if (!(/-$/.test(this.OPERATE))) {
-                    this.OPERATE = this.OPERATE + '-'
-                  }
-                })
-            }.width('20%').height(70)
-          }
-          .width('90%')
-          .height(70)
-          .id('OPERATE')
-          .justifyContent(FlexAlign.SpaceAround)
-
-          Row({}) {
-            Column() {
-              Button('1', { type: ButtonType.Circle, stateEffect: true })
-                .backgroundColor(0xfffef9)
-                .fontColor(Color.Black)
-                .fontWeight(FontWeight.Medium)
-                .fontSize(23)
-                .width(65)
-                .height(65)
-                .onClick(()=>{
-                  reset_animate(this)
-                  this.OPERATE = this.OPERATE + '1'
-                  this.ANSWER = calculateExpression(this.OPERATE)
-                })
-            }.width('20%').height(70)
-
-            Column() {
-              Button('2', { type: ButtonType.Circle, stateEffect: true })
-                .backgroundColor(0xfffef9)
-                .fontColor(Color.Black)
-                .fontWeight(FontWeight.Medium)
-                .fontSize(23)
-                .width(65)
-                .height(65)
-                .onClick(()=>{
-                  reset_animate(this)
-                  this.OPERATE = this.OPERATE + '2'
-                  this.ANSWER = calculateExpression(this.OPERATE)
-                })
-            }.width('20%').height(70)
-
-            Column() {
-              Button('3', { type: ButtonType.Circle, stateEffect: true })
-                .backgroundColor(0xfffef9)
-                .fontColor(Color.Black)
-                .fontWeight(FontWeight.Medium)
-                .fontSize(23)
-                .width(65)
-                .height(65)
-                .onClick(()=>{
-                  reset_animate(this)
-                  this.OPERATE = this.OPERATE + '3'
-                  this.ANSWER = calculateExpression(this.OPERATE)
-                })
-            }.width('20%').height(70)
-
-            Column() {
-              Button('+', { type: ButtonType.Circle, stateEffect: true })
-                .backgroundColor(0xcdd1d3)
-                .fontColor(Color.Black)
-                .fontWeight(FontWeight.Regular)
-                .fontSize(42)
-                .width(65)
-                .height(65)
-                .onClick(()=>{
-                  reset_animate(this)
-                  if (!isLastCharNotDigit(this.OPERATE)) {
-                    this.OPERATE = this.OPERATE + '+'
-                  }
-                })
-            }.width('20%').height(70)
-          }
-          .width('90%')
-          .height(70)
-          .id('OPERATE')
-          .justifyContent(FlexAlign.SpaceAround)
-
-          Row({}) {
-            Column() {
-              Button('00', { type: ButtonType.Circle, stateEffect: true })
-                .backgroundColor(0xfffef9)
-                .fontColor(Color.Black)
-                .fontWeight(FontWeight.Medium)
-                .fontSize(23)
-                .width(65)
-                .height(65)
-                .onClick(()=>{
-                  reset_animate(this)
-                  this.OPERATE = this.OPERATE + '00'
-                  this.ANSWER = calculateExpression(this.OPERATE)
-                })
-            }.width('20%').height(70)
-
-            Column() {
-              Button('0', { type: ButtonType.Circle, stateEffect: true })
-                .backgroundColor(0xfffef9)
-                .fontColor(Color.Black)
-                .fontWeight(FontWeight.Medium)
-                .fontSize(23)
-                .width(65)
-                .height(65)
-                .onClick(()=>{
-                  reset_animate(this)
-                  this.OPERATE = this.OPERATE + '0'
-                  this.ANSWER = calculateExpression(this.OPERATE)
-                })
-            }.width('20%').height(70)
-
-            Column() {
-              Button('.', { type: ButtonType.Circle, stateEffect: true })
-                .backgroundColor(0xfffef9)
-                .fontColor(Color.Black)
-                .fontWeight(FontWeight.Medium)
-                .fontSize(23)
-                .width(65)
-                .height(65)
-                .onClick(()=>{
-                  reset_animate(this)
-                  if (!isLastCharNotDigit(this.OPERATE)) {
-                    this.OPERATE = this.OPERATE + '.'
-                  }
-                })
-            }.width('20%').height(70)
-
-            Column() {
-              Button('=', { type: ButtonType.Circle, stateEffect: true })
-                .backgroundColor(0xfb8b05)
-                .fontColor(Color.White)
-                .fontWeight(FontWeight.Regular)
-                .fontSize(42)
-                .width(65)
-                .height(65)
-                .onClick(()=>{
-                  animateTo({ curve: curves.springMotion() }, () => {
-                    this.answer_animate = true;
-                    this.front_size_op = this.answer_animate ? 30 : 50;
-                    this.front_size_ans = this.answer_animate ? 50 : 30;
-                    this.front_color_op = this.answer_animate ? 0x9fa39a : 0x000000;
-                    this.front_color_ans = this.answer_animate ? 0x000000 : 0x9fa39a;
-                  })
-                })
-            }.width('20%').height(70)
-          }
-          .width('90%')
-          .height(70)
-          .id('OPERATE')
-          .justifyContent(FlexAlign.SpaceAround)
-
+          ForEach(this.rows, (row: KeyDef[], rowIndex: number) => {
+            Row() {
+              ForEach(row, (key: KeyDef, keyIndex: number) => {
+                this.KeyButton(key)
+              }, (key: KeyDef, keyIndex: number) => `key-${key.label}-${keyIndex}`)
+            }
+            .width('90%')
+            .height(70)
+            .justifyContent(FlexAlign.SpaceAround)
+          }, (row: KeyDef[], rowIndex: number) => `row-${rowIndex}`)
         }.width('100%')
       }
     }.width('100%').backgroundColor('rgb(242,242,242)')
     .height('100%')
     .width('100%')
   }
-}
-
-function type(arg0: string) {
-  throw new Error('Function not implemented.');
 }
