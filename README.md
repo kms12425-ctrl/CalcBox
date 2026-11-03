@@ -28,6 +28,16 @@ HarmonyOS NEXT（ArkTS + ArkUI 声明式开发）练习项目。首页是一个�
 
 打开方式：用 DevEco Studio 打开工程根目录，在 **Project Structure → Signing Configs** 配置自动签名后运行 `entry` 模块。命令行构建请使用 DevEco Studio 自带的 hvigor（本工程未附带 `hvigorw` 包装脚本）。
 
+### 关于签名
+
+工程未附带签名材料（`signingConfigs` 为空，product 也不再引用不存在的配置），因此默认构建产物是 `entry-default-unsigned.hap`，**无法直接安装到真机**。开启方式：
+
+1. 在 DevEco Studio 中登录华为账号；
+2. 打开 `File → Project Structure → Signing Configs`，勾选 `Automatically generate signature`；
+3. IDE 会把生成好的 `signingConfigs` 写回 `build-profile.json5`，此后构建即产出已签名 HAP。
+
+签名材料含私钥，请勿提交到仓库。
+
 ## 目录结构
 
 ```
