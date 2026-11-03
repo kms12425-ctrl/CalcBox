@@ -1,0 +1,14 @@
+# 统一换行符：仓库内一律存 LF，检出时按平台转换（Windows 为 CRLF）
+* text=auto
+
+# 二进制资源不做换行符转换
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.webp binary
+*.hap binary
+*.har binary
+*.p12 binary
+*.cer binary
+*.p7b binary
