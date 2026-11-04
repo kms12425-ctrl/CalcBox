@@ -1,9 +1,14 @@
 /**
  * 计算器表达式求值。
  *
- * 当前实现基于正则折叠：先把 `50%` 这类写法转成小数，
- * 再循环折叠所有乘除，最后折叠加减，以此近似“先乘除后加减”。
- * 不处理括号。
+ * 递归下降解析，文法如下：
+ *
+ *   expression := term (('+' | '-') term)*
+ *   term       := factor (('x' | '÷') factor)*
+ *   factor     := ('+' | '-')? (number | '(' expression ')') ('%')?
+ *
+ * 百分号按计算器惯例解释：作为加减的右操作数时取左侧的百分比，
+ * 例如 `200+10%` = 220；其余位置按除以 100 处理，例如 `50%` = 0.5。
  */
 
 /**
@@ -14,22 +19,22 @@ export class EvalResult {
   ok: boolean = false;
   /** 结果文本，ok 为 true 时有效 */
   value: string = '';
-  /** 算式尚未输完（末位是运算符），此时不应刷新结果 */
+  /** 算式尚未输完（末位是运算符或括号未闭合），此时不应刷新结果 */
   incomplete: boolean = true;
-  /** 计算过程出错，例如除以零 */
+  /** 计算过程出错，例如除以零、括号不匹配、非法字符 */
   failed: boolean = false;
 }
 
 /**
- * 判断算式末位是否可以追加运算符（末位必须是数字或百分号）。
+ * 判断算式末位是否可以追加运算符：末位必须是数字、百分号或右括号。
  */
 export function isLastCharNotDigit(operate: string): boolean {
-  return !(/\d$/.test(operate) || /%$/.test(operate));
+  return !(/[\d%)]$/.test(operate));
 }
 
 /**
  * 判断能否再追加一个小数点：同一段数字内不允许出现第二个小数点，
- * 且不能以小数点开头（紧随运算符时也不允许）。
+ * 且不能以小数点开头（紧随运算符或括号时也不允许）。
  */
 export function canAppendDot(operate: string): boolean {
   const match: RegExpMatchArray | null = operate.match(/[\d.]*$/);
@@ -48,60 +53,174 @@ function formatNumber(value: number): string {
   return rounded.toString();
 }
 
-/**
- * 求值并返回字符串结果。除零时抛出异常，由 tryEvaluate 统一处理。
- */
-export function calculateExpression(operate: string): string {
-  operate = operate.replace(/(\d+)%/g, (num) => (parseFloat(num) / 100).toString());
+function countChar(text: string, target: string): number {
+  let count: number = 0;
+  for (let i = 0; i < text.length; i++) {
+    if (text.charAt(i) === target) {
+      count++;
+    }
+  }
+  return count;
+}
 
-  // Function to handle operations
-  const compute = (a: number, b: number, operator: string): number => {
-    switch (operator) {
-      case '+': return a + b;
-      case '-': return a - b;
-      case 'x': return a * b;
-      case '÷':
-        if (b === 0) {
+/**
+ * 解析中间值：pct 表示这个操作数带了百分号，需由上层决定如何解释。
+ */
+class PVal {
+  v: number = 0;
+  pct: boolean = false;
+
+  constructor(v: number, pct: boolean) {
+    this.v = v;
+    this.pct = pct;
+  }
+}
+
+class Parser {
+  private expr: string;
+  private pos: number = 0;
+
+  constructor(expr: string) {
+    this.expr = expr;
+  }
+
+  parse(): number {
+    const result: PVal = this.parseExpression();
+    const value: number = result.pct ? result.v / 100 : result.v;
+    this.skipSpaces();
+    if (this.pos < this.expr.length) {
+      throw new Error('unexpected trailing characters');
+    }
+    return value;
+  }
+
+  private parseExpression(): PVal {
+    let left: PVal = this.parseTerm();
+    while (true) {
+      this.skipSpaces();
+      const op: string = this.peek();
+      if (op !== '+' && op !== '-') {
+        break;
+      }
+      this.pos++;
+      const right: PVal = this.parseTerm();
+      // 右操作数带百分号时取左侧的百分比：200+10% = 200 + 200*10%
+      const delta: number = right.pct ? left.v * right.v / 100 : right.v;
+      const next: number = op === '+' ? left.v + delta : left.v - delta;
+      left = new PVal(next, false);
+    }
+    return left;
+  }
+
+  private parseTerm(): PVal {
+    const first: PVal = this.parseFactor();
+    let acc: number = first.pct ? first.v / 100 : first.v;
+    let hasOperator: boolean = false;
+    while (true) {
+      this.skipSpaces();
+      const op: string = this.peek();
+      if (op !== 'x' && op !== '÷') {
+        break;
+      }
+      this.pos++;
+      const right: PVal = this.parseFactor();
+      const rv: number = right.pct ? right.v / 100 : right.v;
+      if (op === 'x') {
+        acc = acc * rv;
+      } else {
+        if (rv === 0) {
           throw new Error('divide by zero');
         }
-        return a / b;
-      default: throw new Error('Invalid operator');
+        acc = acc / rv;
+      }
+      hasOperator = true;
     }
-  };
-
-  // Handle multiplication and division first
-  const handleMulDiv = (expr: string): string => {
-    const regex = /(-?\d+(\.\d+)?)([x÷])(-?\d+(\.\d+)?)/;
-    let match : RegExpExecArray | null;
-    while ((match = regex.exec(expr)) !== null) {
-      const left = parseFloat(match[1]);
-      const operator = match[3];
-      const right = parseFloat(match[4]);
-      const result = compute(left, right, operator);
-      expr = expr.replace(match[0], formatNumber(result));
+    if (!hasOperator) {
+      return first;
     }
-    return expr;
-  };
+    return new PVal(acc, false);
+  }
 
-  // Handle addition and subtraction
-  const handleAddSub = (expr: string): string => {
-    const regex = /(-?\d+(\.\d+)?)([+\-])(-?\d+(\.\d+)?)/;
-    let match : RegExpExecArray | null;
-    while ((match = regex.exec(expr)) !== null) {
-      const left = parseFloat(match[1]);
-      const operator = match[3];
-      const right = parseFloat(match[4]);
-      const result = compute(left, right, operator);
-      expr = expr.replace(match[0], formatNumber(result));
+  private parseFactor(): PVal {
+    this.skipSpaces();
+    let sign: number = 1;
+    const lead: string = this.peek();
+    if (lead === '-' || lead === '+') {
+      if (lead === '-') {
+        sign = -1;
+      }
+      this.pos++;
+      this.skipSpaces();
     }
-    return expr;
-  };
 
-  // Process the expression
-  let result = handleMulDiv(operate);
-  result = handleAddSub(result);
+    const head: string = this.peek();
+    let value: number = 0;
+    if (head === '(') {
+      this.pos++;
+      const inner: PVal = this.parseExpression();
+      this.skipSpaces();
+      if (this.peek() !== ')') {
+        throw new Error('unbalanced parenthesis');
+      }
+      this.pos++;
+      value = inner.pct ? inner.v / 100 : inner.v;
+    } else {
+      value = this.parseNumber();
+    }
 
-  return result;
+    this.skipSpaces();
+    if (this.peek() === '%') {
+      this.pos++;
+      return new PVal(value * sign, true);
+    }
+    return new PVal(value * sign, false);
+  }
+
+  private parseNumber(): number {
+    const start: number = this.pos;
+    while (this.pos < this.expr.length) {
+      const ch: string = this.expr.charAt(this.pos);
+      const isDigit: boolean = ch >= '0' && ch <= '9';
+      if (isDigit || ch === '.') {
+        this.pos++;
+      } else {
+        break;
+      }
+    }
+    if (start === this.pos) {
+      throw new Error('number expected');
+    }
+    const text: string = this.expr.substring(start, this.pos);
+    const value: number = Number.parseFloat(text);
+    if (Number.isNaN(value)) {
+      throw new Error('invalid number');
+    }
+    return value;
+  }
+
+  private peek(): string {
+    if (this.pos >= this.expr.length) {
+      return '';
+    }
+    return this.expr.charAt(this.pos);
+  }
+
+  private skipSpaces(): void {
+    while (this.pos < this.expr.length && this.expr.charAt(this.pos) === ' ') {
+      this.pos++;
+    }
+  }
+}
+
+/**
+ * 求值并返回字符串结果，空算式返回空串；非法算式抛出异常，由 tryEvaluate 统一处理。
+ */
+export function calculateExpression(operate: string): string {
+  if (operate === '') {
+    return '';
+  }
+  const parser: Parser = new Parser(operate);
+  return formatNumber(parser.parse());
 }
 
 /**
@@ -114,6 +233,12 @@ export function tryEvaluate(operate: string): EvalResult {
   let expr: string = operate;
   while (expr.length > 0 && expr.endsWith('.')) {
     expr = expr.slice(0, -1);
+  }
+
+  // 括号没配平说明算式还没输完
+  if (countChar(expr, '(') > countChar(expr, ')')) {
+    result.incomplete = true;
+    return result;
   }
 
   if (expr === '' || isLastCharNotDigit(expr)) {

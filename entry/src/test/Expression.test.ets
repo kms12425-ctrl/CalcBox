@@ -8,6 +8,7 @@ export default function expressionTest() {
     });
 
     it('multiplies_before_adding', 0, () => {
+      expect(calculateExpression('1+2x3')).assertEqual('7');
       expect(calculateExpression('12+3x4')).assertEqual('24');
     });
 
@@ -23,9 +24,26 @@ export default function expressionTest() {
       expect(calculateExpression('2.5+2.5')).assertEqual('5');
     });
 
+    it('groups_with_parentheses', 0, () => {
+      expect(calculateExpression('(1+2)x3')).assertEqual('9');
+      expect(calculateExpression('2x(3+4)')).assertEqual('14');
+      expect(calculateExpression('((1+2))')).assertEqual('3');
+    });
+
+    it('supports_unary_minus', 0, () => {
+      expect(calculateExpression('-(2+3)')).assertEqual('-5');
+      expect(calculateExpression('5x-2')).assertEqual('-10');
+    });
+
     it('treats_percent_as_hundredth', 0, () => {
       expect(calculateExpression('50%')).assertEqual('0.5');
       expect(calculateExpression('7%')).assertEqual('0.07');
+    });
+
+    it('applies_percent_to_left_operand', 0, () => {
+      expect(calculateExpression('200+10%')).assertEqual('220');
+      expect(calculateExpression('200-10%')).assertEqual('180');
+      expect(calculateExpression('10%x50')).assertEqual('5');
     });
 
     it('returns_empty_for_empty_input', 0, () => {
@@ -44,6 +62,10 @@ export default function expressionTest() {
       expect(isLastCharNotDigit('50%')).assertFalse();
     });
 
+    it('allows_operator_after_closing_paren', 0, () => {
+      expect(isLastCharNotDigit('(1+2)')).assertFalse();
+    });
+
     it('rejects_operator_after_operator', 0, () => {
       expect(isLastCharNotDigit('1+')).assertTrue();
     });
@@ -60,11 +82,23 @@ export default function expressionTest() {
       expect(pending.failed).assertFalse();
     });
 
+    it('reports_unclosed_parenthesis_as_incomplete', 0, () => {
+      const pending = tryEvaluate('(1+2');
+      expect(pending.ok).assertFalse();
+      expect(pending.incomplete).assertTrue();
+      expect(pending.failed).assertFalse();
+    });
+
     it('reports_divide_by_zero', 0, () => {
       const failed = tryEvaluate('5÷0');
       expect(failed.ok).assertFalse();
       expect(failed.incomplete).assertFalse();
       expect(failed.failed).assertTrue();
+      expect(tryEvaluate('(1+1)÷(2-2)').failed).assertTrue();
+    });
+
+    it('reports_unexpected_closing_paren', 0, () => {
+      expect(tryEvaluate('1+)').failed).assertTrue();
     });
 
     it('evaluates_trailing_dot_as_integer', 0, () => {

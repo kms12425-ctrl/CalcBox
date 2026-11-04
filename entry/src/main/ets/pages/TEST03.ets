@@ -13,7 +13,7 @@ enum KeyKind {
 }
 
 /**
- * 一个按键的全部描述：文案、类别、要追加的字符以及配色。
+ * 一个按键的全部描述：文案、类别、要追加的字符、配色与尺寸。
  * 键盘布局与样式都由此数据推导，新增按键只需往 rows 里加一项。
  */
 class KeyDef {
@@ -24,6 +24,7 @@ class KeyDef {
   fontColor: number = 0x000000;
   weight: FontWeight = FontWeight.Medium;
   fontSize: number = 23;
+  size: number = 64;
 }
 
 const BG_DIGIT: number = 0xfffef9;
@@ -31,7 +32,7 @@ const BG_FUNC: number = 0xcdd1d3;
 const BG_EQUAL: number = 0xfb8b05;
 
 function makeKey(label: string, kind: KeyKind, value: string, bgColor: number,
-                 fontSize: number, weight: FontWeight): KeyDef {
+                 fontSize: number, weight: FontWeight, size: number = 64): KeyDef {
   const key: KeyDef = new KeyDef();
   key.label = label;
   key.kind = kind;
@@ -39,6 +40,7 @@ function makeKey(label: string, kind: KeyKind, value: string, bgColor: number,
   key.bgColor = bgColor;
   key.fontSize = fontSize;
   key.weight = weight;
+  key.size = size;
   if (kind === KeyKind.Equals) {
     key.fontColor = 0xffffff;
   }
@@ -58,14 +60,15 @@ struct TEST03 {
   @State indexPage: router.RouterOptions = { 'url': 'pages/Index' };
 
   /**
-   * 键盘布局：5 行 × 4 列，与界面一一对应。
+   * 键盘布局：首行 5 个功能键（含括号），其余 4 行 4 列。
    */
   private rows: KeyDef[][] = [
     [
-      makeKey('AC', KeyKind.Func, 'AC', BG_FUNC, 23, FontWeight.Bold),
-      makeKey('%', KeyKind.Func, '%', BG_FUNC, 23, FontWeight.Bold),
-      makeKey('<=', KeyKind.Func, 'BACK', BG_FUNC, 27, FontWeight.Bold),
-      makeKey('÷', KeyKind.Operator, '÷', BG_FUNC, 30, FontWeight.Bold)
+      makeKey('AC', KeyKind.Func, 'AC', BG_FUNC, 18, FontWeight.Bold, 54),
+      makeKey('( )', KeyKind.Func, 'PAREN', BG_FUNC, 18, FontWeight.Bold, 54),
+      makeKey('%', KeyKind.Func, '%', BG_FUNC, 20, FontWeight.Bold, 54),
+      makeKey('<=', KeyKind.Func, 'BACK', BG_FUNC, 20, FontWeight.Bold, 54),
+      makeKey('÷', KeyKind.Operator, '÷', BG_FUNC, 22, FontWeight.Bold, 54)
     ],
     [
       makeKey('7', KeyKind.Digit, '7', BG_DIGIT, 23, FontWeight.Medium),
@@ -92,6 +95,25 @@ struct TEST03 {
       makeKey('=', KeyKind.Equals, '=', BG_EQUAL, 42, FontWeight.Regular)
     ]
   ];
+
+  /**
+   * 括号键的智能插入：能用右括号就补右括号，否则在合法位置补左括号。
+   */
+  private parenToAppend(): string {
+    const op: string = this.operate;
+    const openMatches: RegExpMatchArray | null = op.match(/\(/g);
+    const closeMatches: RegExpMatchArray | null = op.match(/\)/g);
+    const openCount: number = openMatches === null ? 0 : openMatches.length;
+    const closeCount: number = closeMatches === null ? 0 : closeMatches.length;
+    const lastIsValue: boolean = /[\d%)]$/.test(op);
+    if (openCount > closeCount && lastIsValue) {
+      return ')';
+    }
+    if (op === '' || /[+\-x÷(]$/.test(op)) {
+      return '(';
+    }
+    return '';
+  }
 
   /**
    * 从“结果展示态”复位到“输入态”：算式恢复大字黑色，结果恢复小字灰色。
@@ -151,6 +173,12 @@ struct TEST03 {
         this.operate = this.operate.slice(0, -1);
       }
       this.updateAnswer();
+    } else if (action === 'PAREN') {
+      const next: string = this.parenToAppend();
+      if (next !== '') {
+        this.operate = this.operate + next;
+        this.updateAnswer();
+      }
     }
   }
 
@@ -196,8 +224,8 @@ struct TEST03 {
       .fontColor(key.fontColor)
       .fontWeight(key.weight)
       .fontSize(key.fontSize)
-      .width(65)
-      .height(65)
+      .width(key.size)
+      .height(key.size)
       .onClick(() => {
         this.onKey(key);
       })
@@ -253,7 +281,7 @@ struct TEST03 {
             Row() {
               ForEach(row, (key: KeyDef, keyIndex: number) => {
                 this.KeyButton(key)
-              }, (key: KeyDef, keyIndex: number) => `key-${key.label}-${keyIndex}`)
+              }, (key: KeyDef, keyIndex: number) => `key-${rowIndex}-${key.label}-${keyIndex}`)
             }
             .width('90%')
             .height(70)
