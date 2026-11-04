@@ -1,5 +1,6 @@
 import { curves } from '@kit.ArkUI';
 import { router } from '@kit.ArkUI';
+import { calculateExpression, isLastCharNotDigit } from '../utils/expression';
 
 /**
  * 按键类别，决定点击后走哪条处理分支。
@@ -42,59 +43,6 @@ function makeKey(label: string, kind: KeyKind, value: string, bgColor: number,
     key.fontColor = 0xffffff;
   }
   return key;
-}
-
-function isLastCharNotDigit(operate: string): boolean {
-  return !(/\d$/.test(operate) || /%$/.test(operate));
-}
-
-function calculateExpression(operate: string): string {
-  operate = operate.replace(/(\d+)%/g, (num) => (parseFloat(num) / 100).toString());
-
-  // Function to handle operations
-  const compute = (a: number, b: number, operator: string): number => {
-    switch (operator) {
-      case '+': return a + b;
-      case '-': return a - b;
-      case 'x': return a * b;
-      case '÷': return a / b;
-      default: throw new Error('Invalid operator');
-    }
-  };
-
-  // Handle multiplication and division first
-  const handleMulDiv = (expr: string): string => {
-    const regex = /(-?\d+(\.\d+)?)([x÷])(-?\d+(\.\d+)?)/;
-    let match : RegExpExecArray | null;
-    while ((match = regex.exec(expr)) !== null) {
-      const left = parseFloat(match[1]);
-      const operator = match[3];
-      const right = parseFloat(match[4]);
-      const result = compute(left, right, operator);
-      expr = expr.replace(match[0], result.toString());
-    }
-    return expr;
-  };
-
-  // Handle addition and subtraction
-  const handleAddSub = (expr: string): string => {
-    const regex = /(-?\d+(\.\d+)?)([+\-])(-?\d+(\.\d+)?)/;
-    let match : RegExpExecArray | null;
-    while ((match = regex.exec(expr)) !== null) {
-      const left = parseFloat(match[1]);
-      const operator = match[3];
-      const right = parseFloat(match[4]);
-      const result = compute(left, right, operator);
-      expr = expr.replace(match[0], result.toString());
-    }
-    return expr;
-  };
-
-  // Process the expression
-  let result = handleMulDiv(operate);
-  result = handleAddSub(result);
-
-  return result;
 }
 
 @Entry
