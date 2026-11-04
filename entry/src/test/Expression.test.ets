@@ -1,5 +1,5 @@
 import { describe, it, expect } from '@ohos/hypium';
-import { calculateExpression, isLastCharNotDigit } from '../main/ets/utils/expression';
+import { calculateExpression, canAppendDot, isLastCharNotDigit, tryEvaluate } from '../main/ets/utils/expression';
 
 export default function expressionTest() {
   describe('expression', () => {
@@ -46,6 +46,38 @@ export default function expressionTest() {
 
     it('rejects_operator_after_operator', 0, () => {
       expect(isLastCharNotDigit('1+')).assertTrue();
+    });
+
+    it('formats_floating_point_noise', 0, () => {
+      expect(calculateExpression('0.1+0.2')).assertEqual('0.3');
+      expect(tryEvaluate('0.1+0.2').value).assertEqual('0.3');
+    });
+
+    it('reports_incomplete_expression', 0, () => {
+      const pending = tryEvaluate('1+');
+      expect(pending.ok).assertFalse();
+      expect(pending.incomplete).assertTrue();
+      expect(pending.failed).assertFalse();
+    });
+
+    it('reports_divide_by_zero', 0, () => {
+      const failed = tryEvaluate('5÷0');
+      expect(failed.ok).assertFalse();
+      expect(failed.incomplete).assertFalse();
+      expect(failed.failed).assertTrue();
+    });
+
+    it('evaluates_trailing_dot_as_integer', 0, () => {
+      expect(tryEvaluate('1.').value).assertEqual('1');
+      expect(tryEvaluate('1.').ok).assertTrue();
+    });
+
+    it('allows_dot_only_within_one_number', 0, () => {
+      expect(canAppendDot('1')).assertTrue();
+      expect(canAppendDot('1.5')).assertFalse();
+      expect(canAppendDot('1+2')).assertTrue();
+      expect(canAppendDot('')).assertFalse();
+      expect(canAppendDot('1+')).assertFalse();
     });
   });
 }

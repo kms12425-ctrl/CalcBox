@@ -1,6 +1,6 @@
 import { curves } from '@kit.ArkUI';
 import { router } from '@kit.ArkUI';
-import { calculateExpression, isLastCharNotDigit } from '../utils/expression';
+import { EvalResult, canAppendDot, isLastCharNotDigit, tryEvaluate } from '../utils/expression';
 
 /**
  * 按键类别，决定点击后走哪条处理分支。
@@ -119,6 +119,23 @@ struct TEST03 {
     })
   }
 
+  /**
+   * 刷新结果行：算式没输完就保持上一次的有效结果，
+   * 计算出错才提示“无法计算”，避免把半截算式当成结果显示出来。
+   */
+  private updateAnswer(): void {
+    if (this.operate === '') {
+      this.answer = '';
+      return;
+    }
+    const result: EvalResult = tryEvaluate(this.operate);
+    if (result.ok) {
+      this.answer = result.value;
+    } else if (result.failed) {
+      this.answer = '无法计算';
+    }
+  }
+
   private onFunc(action: string): void {
     this.resetAnimate();
     if (action === 'AC') {
@@ -127,13 +144,13 @@ struct TEST03 {
     } else if (action === '%') {
       if (!isLastCharNotDigit(this.operate)) {
         this.operate = this.operate + '%';
-        this.answer = calculateExpression(this.operate);
+        this.updateAnswer();
       }
     } else if (action === 'BACK') {
       if (this.operate) {
         this.operate = this.operate.slice(0, -1);
       }
-      this.answer = calculateExpression(this.operate);
+      this.updateAnswer();
     }
   }
 
@@ -142,12 +159,13 @@ struct TEST03 {
       case KeyKind.Digit:
         this.resetAnimate();
         if (key.value === '.') {
-          if (!isLastCharNotDigit(this.operate)) {
+          if (canAppendDot(this.operate)) {
             this.operate = this.operate + '.';
+            this.updateAnswer();
           }
         } else {
           this.operate = this.operate + key.value;
-          this.answer = calculateExpression(this.operate);
+          this.updateAnswer();
         }
         break;
       case KeyKind.Operator:
