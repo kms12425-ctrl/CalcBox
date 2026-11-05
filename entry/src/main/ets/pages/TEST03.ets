@@ -1,6 +1,8 @@
 import { curves } from '@kit.ArkUI';
 import { router } from '@kit.ArkUI';
+import { common } from '@kit.AbilityKit';
 import { EvalResult, canAppendDot, isLastCharNotDigit, tryEvaluate } from '../utils/expression';
+import { HistoryEntry, MAX_HISTORY, loadHistory, saveHistory } from '../utils/history';
 
 /**
  * 按键类别，决定点击后走哪条处理分支。
@@ -57,6 +59,7 @@ struct TEST03 {
   @State frontSizeAns: number = 30;
   @State frontColorAns: number = 0x9fa39a;
   @State answerAnimate: boolean = false;
+  @State history: HistoryEntry[] = [];
   @State indexPage: router.RouterOptions = { 'url': 'pages/Index' };
 
   /**
@@ -95,6 +98,43 @@ struct TEST03 {
       makeKey('=', KeyKind.Equals, '=', BG_EQUAL, 42, FontWeight.Regular)
     ]
   ];
+
+  aboutToAppear(): void {
+    this.history = loadHistory(this.historyContext());
+  }
+
+  private historyContext(): common.Context {
+    return this.getUIContext().getHostContext() as common.Context;
+  }
+
+  /**
+   * 只展示最近三条，避免占用算式区空间。
+   */
+  private recentEntries(): HistoryEntry[] {
+    const total: number = this.history.length;
+    if (total === 0) {
+      return [];
+    }
+    const start: number = total > 3 ? total - 3 : 0;
+    return this.history.slice(start);
+  }
+
+  /**
+   * 把当前算式与结果记入历史并持久化。
+   */
+  private rememberCurrent(): void {
+    const result: EvalResult = tryEvaluate(this.operate);
+    if (!result.ok) {
+      return;
+    }
+    const entry: HistoryEntry = new HistoryEntry(this.operate, result.value);
+    const merged: HistoryEntry[] = this.history.concat([entry]);
+    const trimmed: HistoryEntry[] = merged.length > MAX_HISTORY
+      ? merged.slice(merged.length - MAX_HISTORY)
+      : merged;
+    this.history = trimmed;
+    saveHistory(this.historyContext(), trimmed);
+  }
 
   /**
    * 括号键的智能插入：能用右括号就补右括号，否则在合法位置补左括号。
@@ -211,6 +251,7 @@ struct TEST03 {
         break;
       case KeyKind.Equals:
         this.showAnswerAnimate();
+        this.rememberCurrent();
         break;
       default:
         break;
@@ -232,6 +273,23 @@ struct TEST03 {
   }
 
   @Builder
+  HistoryArea() {
+    Column({ space: 4 }) {
+      ForEach(this.recentEntries(), (entry: HistoryEntry, index: number) => {
+        Text(`${entry.expr} = ${entry.result}`)
+          .fontSize(14)
+          .fontColor(0x9fa39a)
+          .maxLines(1)
+          .textOverflow({ overflow: TextOverflow.Ellipsis })
+      }, (entry: HistoryEntry, index: number) => `hist-${index}-${entry.expr}-${entry.result}`)
+    }
+    .width('90%')
+    .height(70)
+    .alignItems(HorizontalAlign.End)
+    .justifyContent(FlexAlign.Center)
+  }
+
+  @Builder
   HeaderArea() {
     Column({ space: 5 }) {
       Row() {
@@ -247,7 +305,7 @@ struct TEST03 {
         Text('Calculator').fontSize(30).fontColor(0xc1b2a3).width('90%')
       }.width('95%')
 
-      Row().width('90%').height(70)
+      this.HistoryArea()
 
       Row() {
         Text(this.operate)
