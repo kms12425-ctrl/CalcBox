@@ -33,6 +33,9 @@ const BG_DIGIT: number = 0xfffef9;
 const BG_FUNC: number = 0xcdd1d3;
 const BG_EQUAL: number = 0xfb8b05;
 
+/** 内容区最大宽度：平板与 2in1 上避免按键被拉伸 */
+const CONTENT_MAX_WIDTH: number = 520;
+
 function makeKey(label: string, kind: KeyKind, value: string, bgColor: number,
                  fontSize: number, weight: FontWeight, size: number = 64): KeyDef {
   const key: KeyDef = new KeyDef();
@@ -53,7 +56,7 @@ function makeKey(label: string, kind: KeyKind, value: string, bgColor: number,
 @Component
 struct TEST03 {
   @State operate: string = '';
-  @State answer: string = '';
+  @State answer: ResourceStr = '';
   @State frontSizeOp: number = 50;
   @State frontColorOp: number = 0x000000;
   @State frontSizeAns: number = 30;
@@ -183,7 +186,7 @@ struct TEST03 {
 
   /**
    * 刷新结果行：算式没输完就保持上一次的有效结果，
-   * 计算出错才提示“无法计算”，避免把半截算式当成结果显示出来。
+   * 计算出错才提示错误，避免把半截算式当成结果显示出来。
    */
   private updateAnswer(): void {
     if (this.operate === '') {
@@ -194,7 +197,7 @@ struct TEST03 {
     if (result.ok) {
       this.answer = result.value;
     } else if (result.failed) {
-      this.answer = '无法计算';
+      this.answer = $r('app.string.cannot_compute');
     }
   }
 
@@ -302,7 +305,7 @@ struct TEST03 {
           .onClick(() => {
             this.getUIContext().getRouter().pushUrl(this.indexPage);
           })
-        Text('Calculator').fontSize(30).fontColor(0xc1b2a3).width('90%')
+        Text($r('app.string.calculator_title')).fontSize(30).fontColor(0xc1b2a3).width('90%')
       }.width('95%')
 
       this.HistoryArea()
@@ -330,7 +333,7 @@ struct TEST03 {
   }
 
   build() {
-    RelativeContainer() {
+    Column() {
       Column({ space: 20 }) {
         this.HeaderArea()
 
@@ -347,8 +350,12 @@ struct TEST03 {
           }, (row: KeyDef[], rowIndex: number) => `row-${rowIndex}`)
         }.width('100%')
       }
-    }.width('100%').backgroundColor('rgb(242,242,242)')
-    .height('100%')
+      .width('100%')
+      .constraintSize({ maxWidth: CONTENT_MAX_WIDTH })
+      .padding({ top: 16, bottom: 16 })
+    }
     .width('100%')
+    .height('100%')
+    .backgroundColor('rgb(242,242,242)')
   }
 }

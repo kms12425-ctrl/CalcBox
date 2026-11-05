@@ -11,6 +11,66 @@
     {
       "name": "EntryAbility_label",
       "value": "label"
+    },
+    {
+      "name": "entry_test01",
+      "value": "进入测试1-图片&按钮"
+    },
+    {
+      "name": "entry_test02",
+      "value": "进入测试2-数据渲染"
+    },
+    {
+      "name": "entry_test03",
+      "value": "进入测试3-计算器"
+    },
+    {
+      "name": "entry_test04",
+      "value": "进入测试4"
+    },
+    {
+      "name": "entry_test05",
+      "value": "进入测试5"
+    },
+    {
+      "name": "entry_test06",
+      "value": "进入测试6"
+    },
+    {
+      "name": "entry_test07",
+      "value": "进入测试7"
+    },
+    {
+      "name": "entry_test08",
+      "value": "进入测试8"
+    },
+    {
+      "name": "action_home",
+      "value": "首页"
+    },
+    {
+      "name": "action_translate",
+      "value": "翻译"
+    },
+    {
+      "name": "greet_en",
+      "value": "Hi, Iam "
+    },
+    {
+      "name": "greet_zh",
+      "value": "你好，我是"
+    },
+    {
+      "name": "person_format",
+      "value": "姓名: %s 年龄: %s"
+    },
+    {
+      "name": "calculator_title",
+      "value": "计算器"
+    },
+    {
+      "name": "cannot_compute",
+      "value": "无法计算"
     }
   ]
 }

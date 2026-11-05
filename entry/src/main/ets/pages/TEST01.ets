@@ -19,9 +19,8 @@ let MTop: Record<string, number> = { 'top': 50 }
 @Entry
 @Component
 struct TEST01 {
-  @State message: string = 'Hi,Iam ';
-  @State message2: string = 'JunHao Ma';
-  @State Index: router.RouterOptions = { 'url': 'pages/Index' }
+  @State chinese: boolean = false;
+  @State indexPage: router.RouterOptions = { 'url': 'pages/Index' }
   @State egDivider: DividerTmp = new DividerTmp(1, 60, 10, '#ffe9f0f0')
   @State egLanes: LengthConstrain = { minLength: 200, maxLength: 300 }
 
@@ -29,14 +28,14 @@ struct TEST01 {
     RelativeContainer() {
       List({ space: 5 }) {
         ListItem() {
-          Text(this.message)
+          Text(this.chinese ? $r('app.string.greet_zh') : $r('app.string.greet_en'))
             .id('test01_hi')
             .fontSize(20)
             .fontWeight(FontWeight.Bold)
         }
 
         ListItem() {
-          Text(this.message2)
+          Text(this.chinese ? '马俊豪' : 'JunHao Ma')
             .id('test01_name')
             .fontSize(25)
             .fontWeight(FontWeight.Bolder)
@@ -45,22 +44,16 @@ struct TEST01 {
 
         ListItem() {
           Row() {
-            Button("首页").onClick(() => {
-              router.pushUrl(this.Index)
+            Button($r('app.string.action_home')).onClick(() => {
+              this.getUIContext().getRouter().pushUrl(this.indexPage)
             })
               .width('50%')
               .borderRadius(20)
               .height(40)
 
-            Button("翻译").onClick(() => {
-              // 让文本变为中文
-              if (this.message == "你好，我是") {
-                this.message = "Hi,Iam "
-                this.message2 = "JunHao Ma"
-              } else {
-                this.message = "你好，我是"
-                this.message2 = "马俊豪"
-              }
+            Button($r('app.string.action_translate')).onClick(() => {
+              // 在中英文两种展示之间切换
+              this.chinese = !this.chinese
             })
               .width('50%')
               .borderRadius(20)
@@ -96,6 +89,7 @@ struct TEST01 {
       .backgroundColor('#FFF1F3F5')
       .height('100%')
       .width('100%')
+      .constraintSize({ maxWidth: 640 })
       .padding(100)
       .scrollBar(BarState.Auto)
       .divider(this.egDivider)

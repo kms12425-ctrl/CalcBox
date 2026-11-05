@@ -11,6 +11,66 @@
     {
       "name": "EntryAbility_label",
       "value": "label"
+    },
+    {
+      "name": "entry_test01",
+      "value": "Test 1 - Images & Buttons"
+    },
+    {
+      "name": "entry_test02",
+      "value": "Test 2 - Data Rendering"
+    },
+    {
+      "name": "entry_test03",
+      "value": "Test 3 - Calculator"
+    },
+    {
+      "name": "entry_test04",
+      "value": "Test 4"
+    },
+    {
+      "name": "entry_test05",
+      "value": "Test 5"
+    },
+    {
+      "name": "entry_test06",
+      "value": "Test 6"
+    },
+    {
+      "name": "entry_test07",
+      "value": "Test 7"
+    },
+    {
+      "name": "entry_test08",
+      "value": "Test 8"
+    },
+    {
+      "name": "action_home",
+      "value": "Home"
+    },
+    {
+      "name": "action_translate",
+      "value": "Translate"
+    },
+    {
+      "name": "greet_en",
+      "value": "Hi, I am "
+    },
+    {
+      "name": "greet_zh",
+      "value": "你好，我是"
+    },
+    {
+      "name": "person_format",
+      "value": "Name: %s   Age: %s"
+    },
+    {
+      "name": "calculator_title",
+      "value": "Calculator"
+    },
+    {
+      "name": "cannot_compute",
+      "value": "Cannot compute"
     }
   ]
 }

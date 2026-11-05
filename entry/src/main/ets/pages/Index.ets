@@ -24,70 +24,71 @@ struct Index {
 
       List({ space: 10 }) {
         ListItem() {
-          Button("进入测试1-图片&按钮").onClick(() => {
-            router.pushUrl(this.TEST01)
+          Button($r('app.string.entry_test01')).onClick(() => {
+            this.getUIContext().getRouter().pushUrl(this.TEST01)
           })
             .width('50%')
             .borderRadius(20)
             .height(40)
         }
         ListItem() {
-          Button("进入测试2-数据渲染").onClick(() => {
-            router.pushUrl(this.TEST02)
+          Button($r('app.string.entry_test02')).onClick(() => {
+            this.getUIContext().getRouter().pushUrl(this.TEST02)
           })
             .width('50%')
             .borderRadius(20)
             .height(40)
         }
         ListItem() {
-          Button("进入测试3-计算器").onClick(() => {
-            router.pushUrl(this.TEST03)
+          Button($r('app.string.entry_test03')).onClick(() => {
+            this.getUIContext().getRouter().pushUrl(this.TEST03)
           })
             .width('50%')
             .borderRadius(20)
             .height(40)
         }
         ListItem() {
-          Button("进入测试4").onClick(() => {
-            router.pushUrl(this.TEST01)
+          Button($r('app.string.entry_test04')).onClick(() => {
+            this.getUIContext().getRouter().pushUrl(this.TEST01)
           })
             .width('50%')
             .borderRadius(20)
             .height(40)
         }
         ListItem() {
-          Button("进入测试5").onClick(() => {
-            router.pushUrl(this.TEST01)
+          Button($r('app.string.entry_test05')).onClick(() => {
+            this.getUIContext().getRouter().pushUrl(this.TEST01)
           })
             .width('50%')
             .borderRadius(20)
             .height(40)
         }
         ListItem() {
-          Button("进入测试6").onClick(() => {
-            router.pushUrl(this.TEST01)
+          Button($r('app.string.entry_test06')).onClick(() => {
+            this.getUIContext().getRouter().pushUrl(this.TEST01)
           })
             .width('50%')
             .borderRadius(20)
             .height(40)
         }
         ListItem() {
-          Button("进入测试7").onClick(() => {
-            router.pushUrl(this.TEST01)
+          Button($r('app.string.entry_test07')).onClick(() => {
+            this.getUIContext().getRouter().pushUrl(this.TEST01)
           })
             .width('50%')
             .borderRadius(20)
             .height(40)
         }
         ListItem() {
-          Button("进入测试8").onClick(() => {
-            router.pushUrl(this.TEST01)
+          Button($r('app.string.entry_test08')).onClick(() => {
+            this.getUIContext().getRouter().pushUrl(this.TEST01)
           })
             .width('50%')
             .borderRadius(20)
             .height(40)
         }
       }
+      .constraintSize({ maxWidth: 420 })
       .alignListItem(ListItemAlign.Center)
     }
     .height('100%')

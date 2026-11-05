@@ -34,13 +34,14 @@ struct TEST02 {
           .borderRadius(8)
           .backgroundColor(0xF55A42)
           .onClick(()=>{
-            router.pushUrl(this.Index)
+            this.getUIContext().getRouter().pushUrl(this.Index)
           })
-        ForEach(this.persons_info_list, (item: PEOPLE_DATA, index?: number) => { // 循环数组创建每一个Item
-          Text(`姓名: ${item.name} 年龄: ${item.age}`)                                     // 可以生成一个或多个子组件
+        ForEach(this.persons_info_list, (item: PEOPLE_DATA, index?: number) => {
+          Text($r('app.string.person_format', item.name, item.age))
             .fontSize(20)
-        })
+        }, (item: PEOPLE_DATA, index?: number) => `${index}-${item.name}`)
       }.width('100%').height(300).backgroundColor('rgb(242,242,242)').justifyContent(FlexAlign.SpaceEvenly)
+      .constraintSize({ maxWidth: 480 })
     }
     .height('100%')
     .width('100%')
