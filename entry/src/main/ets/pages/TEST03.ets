@@ -1,5 +1,4 @@
 import { curves } from '@kit.ArkUI';
-import { router } from '@kit.ArkUI';
 import { common } from '@kit.AbilityKit';
 import { EvalResult, canAppendDot, isLastCharNotDigit, tryEvaluate } from '../utils/expression';
 import { HistoryEntry, MAX_HISTORY, loadHistory, saveHistory } from '../utils/history';
@@ -52,9 +51,8 @@ function makeKey(label: string, kind: KeyKind, value: string, bgColor: number,
   return key;
 }
 
-@Entry
 @Component
-struct TEST03 {
+export struct TEST03 {
   @State operate: string = '';
   @State answer: ResourceStr = '';
   @State frontSizeOp: number = 50;
@@ -63,7 +61,6 @@ struct TEST03 {
   @State frontColorAns: number = 0x9fa39a;
   @State answerAnimate: boolean = false;
   @State history: HistoryEntry[] = [];
-  @State indexPage: router.RouterOptions = { 'url': 'pages/Index' };
 
   /**
    * 键盘布局：首行 5 个功能键（含括号），其余 4 行 4 列。
@@ -295,19 +292,6 @@ struct TEST03 {
   @Builder
   HeaderArea() {
     Column({ space: 5 }) {
-      Row() {
-        Button('<', { type: ButtonType.Normal, stateEffect: true })
-          .width(50)
-          .height(30)
-          .fontSize(15)
-          .borderRadius(8)
-          .backgroundColor(0xF55A42)
-          .onClick(() => {
-            this.getUIContext().getRouter().pushUrl(this.indexPage);
-          })
-        Text($r('app.string.calculator_title')).fontSize(30).fontColor(0xc1b2a3).width('90%')
-      }.width('95%')
-
       this.HistoryArea()
 
       Row() {
@@ -333,29 +317,32 @@ struct TEST03 {
   }
 
   build() {
-    Column() {
-      Column({ space: 20 }) {
-        this.HeaderArea()
+    NavDestination() {
+      Column() {
+        Column({ space: 20 }) {
+          this.HeaderArea()
 
-        Column({ space: 15 }) {
-          ForEach(this.rows, (row: KeyDef[], rowIndex: number) => {
-            Row() {
-              ForEach(row, (key: KeyDef, keyIndex: number) => {
-                this.KeyButton(key)
-              }, (key: KeyDef, keyIndex: number) => `key-${rowIndex}-${key.label}-${keyIndex}`)
-            }
-            .width('90%')
-            .height(70)
-            .justifyContent(FlexAlign.SpaceAround)
-          }, (row: KeyDef[], rowIndex: number) => `row-${rowIndex}`)
-        }.width('100%')
+          Column({ space: 15 }) {
+            ForEach(this.rows, (row: KeyDef[], rowIndex: number) => {
+              Row() {
+                ForEach(row, (key: KeyDef, keyIndex: number) => {
+                  this.KeyButton(key)
+                }, (key: KeyDef, keyIndex: number) => `key-${rowIndex}-${key.label}-${keyIndex}`)
+              }
+              .width('90%')
+              .height(70)
+              .justifyContent(FlexAlign.SpaceAround)
+            }, (row: KeyDef[], rowIndex: number) => `row-${rowIndex}`)
+          }.width('100%')
+        }
+        .width('100%')
+        .constraintSize({ maxWidth: CONTENT_MAX_WIDTH })
+        .padding({ top: 16, bottom: 16 })
       }
       .width('100%')
-      .constraintSize({ maxWidth: CONTENT_MAX_WIDTH })
-      .padding({ top: 16, bottom: 16 })
+      .height('100%')
+      .backgroundColor('rgb(242,242,242)')
     }
-    .width('100%')
-    .height('100%')
-    .backgroundColor('rgb(242,242,242)')
+    .title($r('app.string.entry_test03'))
   }
 }
