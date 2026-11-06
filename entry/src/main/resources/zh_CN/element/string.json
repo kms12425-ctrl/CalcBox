@@ -71,6 +71,10 @@
     {
       "name": "cannot_compute",
       "value": "无法计算"
+    },
+    {
+      "name": "home_title",
+      "value": "实验目录"
     }
   ]
 }

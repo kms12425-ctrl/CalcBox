@@ -3,11 +3,18 @@ import { TEST01 } from './TEST01';
 import { TEST02 } from './TEST02';
 import { TEST03 } from './TEST03';
 
+/** 宽屏判定阈值：与 Navigation 的 navBarWidth + minContentWidth 大致对齐 */
+const WIDE_BREAKPOINT: number = 600;
+
+/** 宽屏下默认选中的实验页 */
+const ROUTE_DEFAULT: string = ROUTE_TEST01;
+
 @Entry
 @Component
 struct Index {
-  @State message: string = 'Hello World';
   @Provide('navStack') pathStack: NavPathStack = new NavPathStack();
+  /** 是否只自动选中过一次，避免旋转屏幕时反复 push */
+  private autoSelected: boolean = false;
 
   /**
    * 路由表：名称由 utils/routes.ets 统一维护，与首页入口一一对应。
@@ -25,25 +32,19 @@ struct Index {
 
   @Builder
   navBar() {
-    RelativeContainer() {
-
-
-      Text(this.message)
-        .id('HelloWorld')
-        .fontSize(50)
+    Column({ space: 12 }) {
+      Text($r('app.string.home_title'))
+        .fontSize(24)
         .fontWeight(FontWeight.Bold)
-        .alignRules({
-          center: { anchor: '__container__', align: VerticalAlign.Center },
-          middle: { anchor: '__container__', align: HorizontalAlign.Center }
-        })
-
+        .width('100%')
+        .textAlign(TextAlign.Start)
 
       List({ space: 10 }) {
         ListItem() {
           Button($r('app.string.entry_test01')).onClick(() => {
             this.pathStack.pushPathByName(ROUTE_TEST01, null)
           })
-            .width('50%')
+            .width('100%')
             .borderRadius(20)
             .height(40)
         }
@@ -51,7 +52,7 @@ struct Index {
           Button($r('app.string.entry_test02')).onClick(() => {
             this.pathStack.pushPathByName(ROUTE_TEST02, null)
           })
-            .width('50%')
+            .width('100%')
             .borderRadius(20)
             .height(40)
         }
@@ -59,7 +60,7 @@ struct Index {
           Button($r('app.string.entry_test03')).onClick(() => {
             this.pathStack.pushPathByName(ROUTE_TEST03, null)
           })
-            .width('50%')
+            .width('100%')
             .borderRadius(20)
             .height(40)
         }
@@ -67,7 +68,7 @@ struct Index {
           Button($r('app.string.entry_test04')).onClick(() => {
             this.pathStack.pushPathByName(ROUTE_TEST01, null)
           })
-            .width('50%')
+            .width('100%')
             .borderRadius(20)
             .height(40)
         }
@@ -75,7 +76,7 @@ struct Index {
           Button($r('app.string.entry_test05')).onClick(() => {
             this.pathStack.pushPathByName(ROUTE_TEST01, null)
           })
-            .width('50%')
+            .width('100%')
             .borderRadius(20)
             .height(40)
         }
@@ -83,7 +84,7 @@ struct Index {
           Button($r('app.string.entry_test06')).onClick(() => {
             this.pathStack.pushPathByName(ROUTE_TEST01, null)
           })
-            .width('50%')
+            .width('100%')
             .borderRadius(20)
             .height(40)
         }
@@ -91,7 +92,7 @@ struct Index {
           Button($r('app.string.entry_test07')).onClick(() => {
             this.pathStack.pushPathByName(ROUTE_TEST01, null)
           })
-            .width('50%')
+            .width('100%')
             .borderRadius(20)
             .height(40)
         }
@@ -99,16 +100,18 @@ struct Index {
           Button($r('app.string.entry_test08')).onClick(() => {
             this.pathStack.pushPathByName(ROUTE_TEST01, null)
           })
-            .width('50%')
+            .width('100%')
             .borderRadius(20)
             .height(40)
         }
       }
-      .constraintSize({ maxWidth: 420 })
-      .alignListItem(ListItemAlign.Center)
+      .layoutWeight(1)
+      .width('100%')
+      .scrollBar(BarState.Off)
     }
-    .height('100%')
     .width('100%')
+    .height('100%')
+    .padding({ left: 16, right: 16, top: 16, bottom: 16 })
   }
 
   build() {
@@ -116,7 +119,19 @@ struct Index {
       this.navBar()
     }
     .hideTitleBar(true)
-    .mode(NavigationMode.Stack)
+    .mode(NavigationMode.Auto)
+    .navBarWidth(280)
+    .navBarWidthRange([240, 320])
     .navDestination(this.pageMap)
+    .onAreaChange((oldArea: Area, newArea: Area) => {
+      const width: number = newArea.width as number;
+      // 宽屏首次进入时自动选中默认实验，避免右侧空白
+      if (width >= WIDE_BREAKPOINT && !this.autoSelected) {
+        this.autoSelected = true;
+        setTimeout(() => {
+          this.pathStack.pushPathByName(ROUTE_DEFAULT, null);
+        }, 0);
+      }
+    })
   }
 }

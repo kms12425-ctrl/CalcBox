@@ -71,6 +71,10 @@
     {
       "name": "cannot_compute",
       "value": "Cannot compute"
+    },
+    {
+      "name": "home_title",
+      "value": "Experiments"
     }
   ]
 }
