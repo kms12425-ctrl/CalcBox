@@ -75,6 +75,10 @@
     {
       "name": "home_title",
       "value": "实验目录"
+    },
+    {
+      "name": "grid_hint",
+      "value": "点击卡片可选中，列数随宽度自适应"
     }
   ]
 }

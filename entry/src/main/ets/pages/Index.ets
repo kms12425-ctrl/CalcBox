@@ -1,7 +1,8 @@
-import { ROUTE_TEST01, ROUTE_TEST02, ROUTE_TEST03 } from '../utils/routes';
+import { ROUTE_TEST01, ROUTE_TEST02, ROUTE_TEST03, ROUTE_TEST04 } from '../utils/routes';
 import { TEST01 } from './TEST01';
 import { TEST02 } from './TEST02';
 import { TEST03 } from './TEST03';
+import { TEST04 } from './TEST04';
 
 /** 宽屏判定阈值：与 Navigation 的 navBarWidth + minContentWidth 大致对齐 */
 const WIDE_BREAKPOINT: number = 600;
@@ -27,6 +28,8 @@ struct Index {
       TEST02()
     } else if (name === ROUTE_TEST03) {
       TEST03()
+    } else if (name === ROUTE_TEST04) {
+      TEST04()
     }
   }
 

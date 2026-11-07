@@ -75,6 +75,10 @@
     {
       "name": "home_title",
       "value": "Experiments"
+    },
+    {
+      "name": "grid_hint",
+      "value": "Tap a card to select it; columns adapt to width"
     }
   ]
 }
