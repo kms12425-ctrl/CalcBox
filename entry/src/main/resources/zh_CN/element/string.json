@@ -91,6 +91,38 @@
     {
       "name": "anim_list",
       "value": "列表增删过渡"
+    },
+    {
+      "name": "form_name",
+      "value": "姓名"
+    },
+    {
+      "name": "form_email",
+      "value": "邮箱"
+    },
+    {
+      "name": "form_age",
+      "value": "年龄"
+    },
+    {
+      "name": "err_name",
+      "value": "至少需要 2 个字符"
+    },
+    {
+      "name": "err_email",
+      "value": "邮箱格式不正确"
+    },
+    {
+      "name": "err_age",
+      "value": "请输入 1 到 120 之间的整数"
+    },
+    {
+      "name": "form_submit",
+      "value": "提交"
+    },
+    {
+      "name": "form_ok",
+      "value": "校验通过，已提交"
     }
   ]
 }

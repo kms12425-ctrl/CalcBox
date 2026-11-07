@@ -91,6 +91,38 @@
     {
       "name": "anim_list",
       "value": "List add/remove transition"
+    },
+    {
+      "name": "form_name",
+      "value": "Name"
+    },
+    {
+      "name": "form_email",
+      "value": "Email"
+    },
+    {
+      "name": "form_age",
+      "value": "Age"
+    },
+    {
+      "name": "err_name",
+      "value": "At least 2 characters"
+    },
+    {
+      "name": "err_email",
+      "value": "Invalid email format"
+    },
+    {
+      "name": "err_age",
+      "value": "Enter an integer between 1 and 120"
+    },
+    {
+      "name": "form_submit",
+      "value": "Submit"
+    },
+    {
+      "name": "form_ok",
+      "value": "Validated and submitted"
     }
   ]
 }
