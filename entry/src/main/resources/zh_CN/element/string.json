@@ -79,6 +79,18 @@
     {
       "name": "grid_hint",
       "value": "点击卡片可选中，列数随宽度自适应"
+    },
+    {
+      "name": "anim_move",
+      "value": "位移（对比三种曲线）"
+    },
+    {
+      "name": "anim_scale",
+      "value": "缩放与颜色"
+    },
+    {
+      "name": "anim_list",
+      "value": "列表增删过渡"
     }
   ]
 }

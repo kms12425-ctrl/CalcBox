@@ -79,6 +79,18 @@
     {
       "name": "grid_hint",
       "value": "Tap a card to select it; columns adapt to width"
+    },
+    {
+      "name": "anim_move",
+      "value": "Translate (compare three curves)"
+    },
+    {
+      "name": "anim_scale",
+      "value": "Scale & color"
+    },
+    {
+      "name": "anim_list",
+      "value": "List add/remove transition"
     }
   ]
 }
