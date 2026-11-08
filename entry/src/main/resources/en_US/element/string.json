@@ -123,6 +123,34 @@
     {
       "name": "form_ok",
       "value": "Validated and submitted"
+    },
+    {
+      "name": "settings_nickname",
+      "value": "Nickname"
+    },
+    {
+      "name": "settings_font",
+      "value": "Font size"
+    },
+    {
+      "name": "settings_preview",
+      "value": "Preview"
+    },
+    {
+      "name": "settings_preview_text",
+      "value": "A paragraph to preview the current font size"
+    },
+    {
+      "name": "settings_save",
+      "value": "Save"
+    },
+    {
+      "name": "settings_saved",
+      "value": "Saved"
+    },
+    {
+      "name": "home_greeting",
+      "value": "Hi, %s"
     }
   ]
 }

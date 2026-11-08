@@ -1,10 +1,11 @@
-import { ROUTE_TEST01, ROUTE_TEST02, ROUTE_TEST03, ROUTE_TEST04, ROUTE_TEST05, ROUTE_TEST06 } from '../utils/routes';
+import { ROUTE_TEST01, ROUTE_TEST02, ROUTE_TEST03, ROUTE_TEST04, ROUTE_TEST05, ROUTE_TEST06, ROUTE_TEST07 } from '../utils/routes';
 import { TEST01 } from './TEST01';
 import { TEST02 } from './TEST02';
 import { TEST03 } from './TEST03';
 import { TEST04 } from './TEST04';
 import { TEST05 } from './TEST05';
 import { TEST06 } from './TEST06';
+import { TEST07 } from './TEST07';
 
 /** 宽屏判定阈值：与 Navigation 的 navBarWidth + minContentWidth 大致对齐 */
 const WIDE_BREAKPOINT: number = 600;
@@ -16,6 +17,8 @@ const ROUTE_DEFAULT: string = ROUTE_TEST01;
 @Component
 struct Index {
   @Provide('navStack') pathStack: NavPathStack = new NavPathStack();
+  /** 由 TEST07 的设置页写入 AppStorage，首页实时显示 */
+  @StorageProp('nickname') nickname: string = '';
   /** 是否只自动选中过一次，避免旋转屏幕时反复 push */
   private autoSelected: boolean = false;
 
@@ -36,17 +39,28 @@ struct Index {
       TEST05()
     } else if (name === ROUTE_TEST06) {
       TEST06()
+    } else if (name === ROUTE_TEST07) {
+      TEST07()
     }
   }
 
   @Builder
   navBar() {
     Column({ space: 12 }) {
-      Text($r('app.string.home_title'))
-        .fontSize(24)
-        .fontWeight(FontWeight.Bold)
-        .width('100%')
-        .textAlign(TextAlign.Start)
+      Column({ space: 4 }) {
+        Text($r('app.string.home_title'))
+          .fontSize(24)
+          .fontWeight(FontWeight.Bold)
+          .width('100%')
+          .textAlign(TextAlign.Start)
+        if (this.nickname !== '') {
+          Text($r('app.string.home_greeting', this.nickname))
+            .fontSize(13)
+            .fontColor(0x666666)
+            .width('100%')
+        }
+      }
+      .width('100%')
 
       List({ space: 10 }) {
         ListItem() {

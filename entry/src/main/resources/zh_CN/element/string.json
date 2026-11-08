@@ -123,6 +123,34 @@
     {
       "name": "form_ok",
       "value": "校验通过，已提交"
+    },
+    {
+      "name": "settings_nickname",
+      "value": "昵称"
+    },
+    {
+      "name": "settings_font",
+      "value": "字号"
+    },
+    {
+      "name": "settings_preview",
+      "value": "预览"
+    },
+    {
+      "name": "settings_preview_text",
+      "value": "这是一段用于观察字号的预览文字"
+    },
+    {
+      "name": "settings_save",
+      "value": "保存"
+    },
+    {
+      "name": "settings_saved",
+      "value": "已保存"
+    },
+    {
+      "name": "home_greeting",
+      "value": "你好，%s"
     }
   ]
 }
