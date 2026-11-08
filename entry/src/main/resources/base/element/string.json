@@ -151,6 +151,38 @@
     {
       "name": "home_greeting",
       "value": "Hi, %s"
+    },
+    {
+      "name": "about_version_name",
+      "value": "Version name"
+    },
+    {
+      "name": "about_version_code",
+      "value": "Version code"
+    },
+    {
+      "name": "about_bundle",
+      "value": "Bundle name"
+    },
+    {
+      "name": "about_devices",
+      "value": "Devices"
+    },
+    {
+      "name": "about_sdk",
+      "value": "SDK versions"
+    },
+    {
+      "name": "about_deps",
+      "value": "Dependencies"
+    },
+    {
+      "name": "about_pages",
+      "value": "Pages"
+    },
+    {
+      "name": "about_footer",
+      "value": "Built with ArkTS and ArkUI for learning purposes."
     }
   ]
 }

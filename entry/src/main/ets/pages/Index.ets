@@ -1,4 +1,4 @@
-import { ROUTE_TEST01, ROUTE_TEST02, ROUTE_TEST03, ROUTE_TEST04, ROUTE_TEST05, ROUTE_TEST06, ROUTE_TEST07 } from '../utils/routes';
+import { ROUTE_TEST01, ROUTE_TEST02, ROUTE_TEST03, ROUTE_TEST04, ROUTE_TEST05, ROUTE_TEST06, ROUTE_TEST07, ROUTE_TEST08 } from '../utils/routes';
 import { TEST01 } from './TEST01';
 import { TEST02 } from './TEST02';
 import { TEST03 } from './TEST03';
@@ -6,12 +6,13 @@ import { TEST04 } from './TEST04';
 import { TEST05 } from './TEST05';
 import { TEST06 } from './TEST06';
 import { TEST07 } from './TEST07';
+import { TEST08 } from './TEST08';
 
 /** 宽屏判定阈值：与 Navigation 的 navBarWidth + minContentWidth 大致对齐 */
 const WIDE_BREAKPOINT: number = 600;
 
 /** 宽屏下默认选中的实验页 */
-const ROUTE_DEFAULT: string = ROUTE_TEST01;
+const ROUTE_DEFAULT: string = ROUTE_TEST08;
 
 @Entry
 @Component
@@ -41,6 +42,8 @@ struct Index {
       TEST06()
     } else if (name === ROUTE_TEST07) {
       TEST07()
+    } else if (name === ROUTE_TEST08) {
+      TEST08()
     }
   }
 
