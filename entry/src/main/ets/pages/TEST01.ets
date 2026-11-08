@@ -12,8 +12,6 @@ class DividerTmp {
   }
 }
 
-let MTop: Record<string, number> = { 'top': 50 }
-
 @Component
 export struct TEST01 {
   @State chinese: boolean = false;

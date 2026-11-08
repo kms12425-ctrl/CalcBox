@@ -45,10 +45,6 @@
       "value": "进入测试8"
     },
     {
-      "name": "action_home",
-      "value": "首页"
-    },
-    {
       "name": "action_translate",
       "value": "翻译"
     },
@@ -63,10 +59,6 @@
     {
       "name": "person_format",
       "value": "姓名: %s 年龄: %s"
-    },
-    {
-      "name": "calculator_title",
-      "value": "计算器"
     },
     {
       "name": "cannot_compute",
