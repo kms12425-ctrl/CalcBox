@@ -46,6 +46,44 @@ export default function expressionTest() {
       expect(calculateExpression('10%x50')).assertEqual('5');
     });
 
+    it('evaluates_trig_in_degrees', 0, () => {
+      expect(calculateExpression('sin(30)', true)).assertEqual('0.5');
+      expect(calculateExpression('cos(60)', true)).assertEqual('0.5');
+      expect(calculateExpression('tan(45)', true)).assertEqual('1');
+    });
+
+    it('evaluates_trig_in_radians', 0, () => {
+      expect(calculateExpression('sin(π÷2)', false)).assertEqual('1');
+      expect(calculateExpression('cos(0)', false)).assertEqual('1');
+    });
+
+    it('evaluates_logarithms', 0, () => {
+      expect(calculateExpression('ln(1)', false)).assertEqual('0');
+      expect(calculateExpression('log(100)', false)).assertEqual('2');
+    });
+
+    it('evaluates_square_root', 0, () => {
+      expect(calculateExpression('√9', false)).assertEqual('3');
+      expect(calculateExpression('√(9+7)', false)).assertEqual('4');
+    });
+
+    it('evaluates_pi', 0, () => {
+      expect(calculateExpression('π', false)).assertEqual('3.1415926536');
+    });
+
+    it('supports_implicit_multiplication', 0, () => {
+      expect(calculateExpression('2π', false)).assertEqual('6.2831853072');
+      expect(calculateExpression('2(3+4)', false)).assertEqual('14');
+      expect(calculateExpression('2sin(30)', true)).assertEqual('1');
+    });
+
+    it('reports_function_domain_errors', 0, () => {
+      expect(tryEvaluate('ln(0)', false).failed).assertTrue();
+      expect(tryEvaluate('√-4', false).failed).assertTrue();
+      // tan(90°) 溢出，按不可计算处理
+      expect(tryEvaluate('tan(90)', true).failed).assertTrue();
+    });
+
     it('returns_empty_for_empty_input', 0, () => {
       expect(calculateExpression('')).assertEqual('');
     });
@@ -62,8 +100,9 @@ export default function expressionTest() {
       expect(isLastCharNotDigit('50%')).assertFalse();
     });
 
-    it('allows_operator_after_closing_paren', 0, () => {
+    it('allows_operator_after_closing_paren_and_pi', 0, () => {
       expect(isLastCharNotDigit('(1+2)')).assertFalse();
+      expect(isLastCharNotDigit('π')).assertFalse();
     });
 
     it('rejects_operator_after_operator', 0, () => {

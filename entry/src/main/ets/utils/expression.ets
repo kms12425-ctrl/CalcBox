@@ -1,14 +1,18 @@
 /**
  * 计算器表达式求值。
  *
- * 递归下降解析，文法如下：
+ * 递归下降解析，文法如下（`x` 表示乘号，`÷` 表示除号）：
  *
  *   expression := term (('+' | '-') term)*
- *   term       := factor (('x' | '÷') factor)*
- *   factor     := ('+' | '-')? (number | '(' expression ')') ('%')?
+ *   term       := factor (('x' | '÷') factor | factor)*     // 相邻即隐式乘法
+ *   factor     := ('+' | '-')? atom ('%')?
+ *   atom       := number | 'π' | '√' factor | func '(' expression ')' | '(' expression ')'
+ *   func       := sin | cos | tan | ln | log
  *
  * 百分号按计算器惯例解释：作为加减的右操作数时取左侧的百分比，
  * 例如 `200+10%` = 220；其余位置按除以 100 处理，例如 `50%` = 0.5。
+ *
+ * 三角函数默认按弧度计算，可通过 useDegrees 切换为角度制。
  */
 
 /**
@@ -21,15 +25,15 @@ export class EvalResult {
   value: string = '';
   /** 算式尚未输完（末位是运算符或括号未闭合），此时不应刷新结果 */
   incomplete: boolean = true;
-  /** 计算过程出错，例如除以零、括号不匹配、非法字符 */
+  /** 计算过程出错，例如除以零、对数定义域、括号不匹配 */
   failed: boolean = false;
 }
 
 /**
- * 判断算式末位是否可以追加运算符：末位必须是数字、百分号或右括号。
+ * 判断算式末位是否可以追加运算符：末位必须是数字、百分号、右括号或圆周率。
  */
 export function isLastCharNotDigit(operate: string): boolean {
-  return !(/[\d%)]$/.test(operate));
+  return !(/[\d%)π]$/.test(operate));
 }
 
 /**
@@ -47,9 +51,16 @@ export function canAppendDot(operate: string): boolean {
 
 /**
  * 去除浮点误差后再转成字符串，例如 0.30000000000000004 -> 0.3。
+ * 非有限值或超出可读范围的结果统一标记为 NaN，由 tryEvaluate 判定为失败。
  */
 function formatNumber(value: number): string {
+  if (!Number.isFinite(value)) {
+    return 'NaN';
+  }
   const rounded: number = Number(value.toFixed(10));
+  if (!Number.isFinite(rounded) || Math.abs(rounded) > 1e15) {
+    return 'NaN';
+  }
   return rounded.toString();
 }
 
@@ -61,6 +72,10 @@ function countChar(text: string, target: string): number {
     }
   }
   return count;
+}
+
+function toRadians(value: number, useDegrees: boolean): number {
+  return useDegrees ? value * Math.PI / 180 : value;
 }
 
 /**
@@ -79,9 +94,11 @@ class PVal {
 class Parser {
   private expr: string;
   private pos: number = 0;
+  private useDegrees: boolean;
 
-  constructor(expr: string) {
+  constructor(expr: string, useDegrees: boolean) {
     this.expr = expr;
+    this.useDegrees = useDegrees;
   }
 
   parse(): number {
@@ -119,13 +136,19 @@ class Parser {
     while (true) {
       this.skipSpaces();
       const op: string = this.peek();
-      if (op !== 'x' && op !== '÷') {
+      let isMultiply: boolean;
+      if (op === 'x' || op === '÷') {
+        isMultiply = op === 'x';
+        this.pos++;
+      } else if (this.startsAtom(op)) {
+        // 相邻即相乘：2π、3(4+1)、2sin(30)
+        isMultiply = true;
+      } else {
         break;
       }
-      this.pos++;
       const right: PVal = this.parseFactor();
       const rv: number = right.pct ? right.v / 100 : right.v;
-      if (op === 'x') {
+      if (isMultiply) {
         acc = acc * rv;
       } else {
         if (rv === 0) {
@@ -139,6 +162,14 @@ class Parser {
       return first;
     }
     return new PVal(acc, false);
+  }
+
+  /** 判断一个字符是否可以作为「乘号省略」后的操作数开头 */
+  private startsAtom(ch: string): boolean {
+    if (ch === '(' || ch === 'π' || ch === '√') {
+      return true;
+    }
+    return ch >= 'a' && ch <= 'z';
   }
 
   private parseFactor(): PVal {
@@ -155,7 +186,34 @@ class Parser {
 
     const head: string = this.peek();
     let value: number = 0;
-    if (head === '(') {
+
+    if (head === 'π') {
+      this.pos++;
+      value = Math.PI;
+    } else if (head === '√') {
+      this.pos++;
+      const inner: PVal = this.parseFactor();
+      const radicand: number = inner.pct ? inner.v / 100 : inner.v;
+      if (radicand < 0) {
+        throw new Error('square root of negative number');
+      }
+      value = Math.sqrt(radicand);
+    } else if (this.isLetter(head)) {
+      const name: string = this.readIdentifier();
+      this.skipSpaces();
+      if (this.peek() !== '(') {
+        throw new Error('parenthesis expected after function name');
+      }
+      this.pos++;
+      const arg: PVal = this.parseExpression();
+      this.skipSpaces();
+      if (this.peek() !== ')') {
+        throw new Error('unbalanced parenthesis');
+      }
+      this.pos++;
+      const raw: number = arg.pct ? arg.v / 100 : arg.v;
+      value = this.applyFunction(name, raw);
+    } else if (head === '(') {
       this.pos++;
       const inner: PVal = this.parseExpression();
       this.skipSpaces();
@@ -174,6 +232,39 @@ class Parser {
       return new PVal(value * sign, true);
     }
     return new PVal(value * sign, false);
+  }
+
+  private applyFunction(name: string, value: number): number {
+    const angle: number = toRadians(value, this.useDegrees);
+    switch (name) {
+      case 'sin': return Math.sin(angle);
+      case 'cos': return Math.cos(angle);
+      case 'tan': return Math.tan(angle);
+      case 'ln':
+        if (value <= 0) {
+          throw new Error('logarithm domain error');
+        }
+        return Math.log(value);
+      case 'log':
+        if (value <= 0) {
+          throw new Error('logarithm domain error');
+        }
+        return Math.log10(value);
+      default:
+        throw new Error('unknown function');
+    }
+  }
+
+  private isLetter(ch: string): boolean {
+    return (ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z');
+  }
+
+  private readIdentifier(): string {
+    const start: number = this.pos;
+    while (this.pos < this.expr.length && this.isLetter(this.expr.charAt(this.pos))) {
+      this.pos++;
+    }
+    return this.expr.substring(start, this.pos).toLowerCase();
   }
 
   private parseNumber(): number {
@@ -215,18 +306,18 @@ class Parser {
 /**
  * 求值并返回字符串结果，空算式返回空串；非法算式抛出异常，由 tryEvaluate 统一处理。
  */
-export function calculateExpression(operate: string): string {
+export function calculateExpression(operate: string, useDegrees: boolean = false): string {
   if (operate === '') {
     return '';
   }
-  const parser: Parser = new Parser(operate);
+  const parser: Parser = new Parser(operate, useDegrees);
   return formatNumber(parser.parse());
 }
 
 /**
  * 面向界面的求值入口：区分「未输完」「算不出」「有结果」。
  */
-export function tryEvaluate(operate: string): EvalResult {
+export function tryEvaluate(operate: string, useDegrees: boolean = false): EvalResult {
   const result: EvalResult = new EvalResult();
 
   // 末尾的小数点不参与求值，例如 "1." 按 "1" 处理
@@ -248,7 +339,7 @@ export function tryEvaluate(operate: string): EvalResult {
 
   result.incomplete = false;
   try {
-    const text: string = calculateExpression(expr);
+    const text: string = calculateExpression(expr, useDegrees);
     if (text === '' || text.indexOf('Infinity') >= 0 || text.indexOf('NaN') >= 0) {
       result.failed = true;
       return result;
