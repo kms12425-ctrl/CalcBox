@@ -175,6 +175,22 @@
     {
       "name": "about_footer",
       "value": "使用 ArkTS 与 ArkUI 构建，仅用于学习。"
+    },
+    {
+      "name": "search_placeholder",
+      "value": "搜索实验"
+    },
+    {
+      "name": "group_basic",
+      "value": "基础"
+    },
+    {
+      "name": "group_advanced",
+      "value": "进阶"
+    },
+    {
+      "name": "search_empty",
+      "value": "没有匹配的实验"
     }
   ]
 }

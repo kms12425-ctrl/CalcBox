@@ -175,6 +175,22 @@
     {
       "name": "about_footer",
       "value": "Built with ArkTS and ArkUI for learning purposes."
+    },
+    {
+      "name": "search_placeholder",
+      "value": "Search experiments"
+    },
+    {
+      "name": "group_basic",
+      "value": "Basics"
+    },
+    {
+      "name": "group_advanced",
+      "value": "Advanced"
+    },
+    {
+      "name": "search_empty",
+      "value": "No matching experiment"
     }
   ]
 }
