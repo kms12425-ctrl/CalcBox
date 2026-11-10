@@ -51,7 +51,7 @@ export struct TEST06 {
           Column({ space: 6 }) {
             Text($r('app.string.form_name'))
               .fontSize(14)
-              .fontColor(0x666666)
+              .fontColor($r('app.color.text_secondary'))
               .width('100%')
             TextInput({ text: this.name })
               .height(44)
@@ -60,14 +60,14 @@ export struct TEST06 {
               })
             Text(this.name !== '' && !this.nameValid() ? $r('app.string.err_name') : '')
               .fontSize(12)
-              .fontColor(0xE84026)
+              .fontColor($r('app.color.danger'))
               .width('100%')
           }
 
           Column({ space: 6 }) {
             Text($r('app.string.form_email'))
               .fontSize(14)
-              .fontColor(0x666666)
+              .fontColor($r('app.color.text_secondary'))
               .width('100%')
             TextInput({ text: this.email })
               .height(44)
@@ -77,14 +77,14 @@ export struct TEST06 {
               })
             Text(this.email !== '' && !this.emailValid() ? $r('app.string.err_email') : '')
               .fontSize(12)
-              .fontColor(0xE84026)
+              .fontColor($r('app.color.danger'))
               .width('100%')
           }
 
           Column({ space: 6 }) {
             Text($r('app.string.form_age'))
               .fontSize(14)
-              .fontColor(0x666666)
+              .fontColor($r('app.color.text_secondary'))
               .width('100%')
             TextInput({ text: this.age })
               .height(44)
@@ -94,7 +94,7 @@ export struct TEST06 {
               })
             Text(this.age !== '' && !this.ageValid() ? $r('app.string.err_age') : '')
               .fontSize(12)
-              .fontColor(0xE84026)
+              .fontColor($r('app.color.danger'))
               .width('100%')
           }
 
@@ -112,7 +112,7 @@ export struct TEST06 {
       .width('100%')
       .height('100%')
       .align(Alignment.Top)
-      .backgroundColor('#F5F7FA')
+      .backgroundColor($r('app.color.surface_bg'))
     }
     .title($r('app.string.entry_test06'))
   }

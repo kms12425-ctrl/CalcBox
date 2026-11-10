@@ -32,11 +32,11 @@ export struct TEST08 {
     Row() {
       Text(label)
         .fontSize(14)
-        .fontColor(0x666666)
+        .fontColor($r('app.color.text_secondary'))
         .layoutWeight(1)
       Text(value)
         .fontSize(14)
-        .fontColor(0x333333)
+        .fontColor($r('app.color.text_primary'))
     }
     .width('100%')
     .padding({ top: 10, bottom: 10 })
@@ -44,7 +44,7 @@ export struct TEST08 {
 
   @Builder
   DividerLine() {
-    Divider().color(0xEEEEEE).strokeWidth(1)
+    Divider().color($r('app.color.divider')).strokeWidth(1)
   }
 
   build() {
@@ -73,7 +73,7 @@ export struct TEST08 {
 
           Text($r('app.string.about_footer'))
             .fontSize(12)
-            .fontColor(0x999999)
+            .fontColor($r('app.color.text_tertiary'))
             .width('100%')
             .margin({ top: 16 })
         }
@@ -83,7 +83,7 @@ export struct TEST08 {
       .width('100%')
       .height('100%')
       .align(Alignment.Top)
-      .backgroundColor('#F5F7FA')
+      .backgroundColor($r('app.color.surface_bg'))
     }
     .title($r('app.string.entry_test08'))
   }

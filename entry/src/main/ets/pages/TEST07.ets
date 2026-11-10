@@ -54,8 +54,8 @@ export struct TEST07 {
       .width(64)
       .height(36)
       .fontSize(14)
-      .backgroundColor(this.fontScale === scale ? 0x0A59F7 : 0xE8E8E8)
-      .fontColor(this.fontScale === scale ? 0xFFFFFF : 0x333333)
+      .backgroundColor(this.fontScale === scale ? $r('app.color.accent') : $r('app.color.chip_bg'))
+      .fontColor(this.fontScale === scale ? $r('app.color.accent_on') : $r('app.color.text_primary'))
       .onClick(() => {
         this.fontScale = scale;
       })
@@ -68,7 +68,7 @@ export struct TEST07 {
           Column({ space: 6 }) {
             Text($r('app.string.settings_nickname'))
               .fontSize(14)
-              .fontColor(0x666666)
+              .fontColor($r('app.color.text_secondary'))
               .width('100%')
             TextInput({ text: this.nickname })
               .height(44)
@@ -80,7 +80,7 @@ export struct TEST07 {
           Column({ space: 6 }) {
             Text($r('app.string.settings_font'))
               .fontSize(14)
-              .fontColor(0x666666)
+              .fontColor($r('app.color.text_secondary'))
               .width('100%')
             Row({ space: 10 }) {
               this.ScaleButton(SCALE_S)
@@ -93,11 +93,11 @@ export struct TEST07 {
           Column({ space: 6 }) {
             Text($r('app.string.settings_preview'))
               .fontSize(14)
-              .fontColor(0x666666)
+              .fontColor($r('app.color.text_secondary'))
               .width('100%')
             Text($r('app.string.settings_preview_text'))
               .fontSize(sizeOfScale(this.fontScale))
-              .fontColor(0x333333)
+              .fontColor($r('app.color.text_primary'))
               .width('100%')
           }
 
@@ -114,7 +114,7 @@ export struct TEST07 {
       .width('100%')
       .height('100%')
       .align(Alignment.Top)
-      .backgroundColor('#F5F7FA')
+      .backgroundColor($r('app.color.surface_bg'))
     }
     .title($r('app.string.entry_test07'))
   }

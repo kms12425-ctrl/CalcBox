@@ -23,22 +23,22 @@ class KeyDef {
   label: string = '';
   kind: KeyKind = KeyKind.Digit;
   value: string = '';
-  bgColor: number = 0xfffef9;
-  fontColor: number = 0x000000;
+  bgColor: ResourceColor = $r('app.color.key_digit_bg');
+  fontColor: ResourceColor = $r('app.color.text_primary');
   weight: FontWeight = FontWeight.Medium;
   fontSize: number = 23;
   size: number = 64;
 }
 
-const BG_DIGIT: number = 0xfffef9;
-const BG_FUNC: number = 0xcdd1d3;
-const BG_EQUAL: number = 0xfb8b05;
-const BG_SCI: number = 0xe3e8ee;
+const BG_DIGIT: ResourceColor = $r('app.color.key_digit_bg');
+const BG_FUNC: ResourceColor = $r('app.color.key_func_bg');
+const BG_EQUAL: ResourceColor = $r('app.color.key_equal_bg');
+const BG_SCI: ResourceColor = $r('app.color.key_sci_bg');
 
 /** 内容区最大宽度：平板与 2in1 上避免按键被拉伸 */
 const CONTENT_MAX_WIDTH: number = 520;
 
-function makeKey(label: string, kind: KeyKind, value: string, bgColor: number,
+function makeKey(label: string, kind: KeyKind, value: string, bgColor: ResourceColor,
                  fontSize: number, weight: FontWeight, size: number = 64): KeyDef {
   const key: KeyDef = new KeyDef();
   key.label = label;
@@ -49,7 +49,7 @@ function makeKey(label: string, kind: KeyKind, value: string, bgColor: number,
   key.weight = weight;
   key.size = size;
   if (kind === KeyKind.Equals) {
-    key.fontColor = 0xffffff;
+    key.fontColor = $r('app.color.accent_on');
   }
   return key;
 }
@@ -58,10 +58,6 @@ function makeKey(label: string, kind: KeyKind, value: string, bgColor: number,
 export struct TEST03 {
   @State operate: string = '';
   @State answer: ResourceStr = '';
-  @State frontSizeOp: number = 50;
-  @State frontColorOp: number = 0x000000;
-  @State frontSizeAns: number = 30;
-  @State frontColorAns: number = 0x9fa39a;
   @State answerAnimate: boolean = false;
   @State history: HistoryEntry[] = [];
   /** 三角函数按角度制还是弧度制计算 */
@@ -179,10 +175,6 @@ export struct TEST03 {
   private resetAnimate(): void {
     this.getUIContext().animateTo({ curve: curves.springMotion() }, () => {
       this.answerAnimate = false;
-      this.frontSizeOp = this.answerAnimate ? 30 : 50;
-      this.frontSizeAns = this.answerAnimate ? 50 : 30;
-      this.frontColorOp = this.answerAnimate ? 0x9fa39a : 0x000000;
-      this.frontColorAns = this.answerAnimate ? 0x000000 : 0x9fa39a;
     })
   }
 
@@ -192,10 +184,6 @@ export struct TEST03 {
   private showAnswerAnimate(): void {
     this.getUIContext().animateTo({ curve: curves.springMotion() }, () => {
       this.answerAnimate = true;
-      this.frontSizeOp = this.answerAnimate ? 30 : 50;
-      this.frontSizeAns = this.answerAnimate ? 50 : 30;
-      this.frontColorOp = this.answerAnimate ? 0x9fa39a : 0x000000;
-      this.frontColorAns = this.answerAnimate ? 0x000000 : 0x9fa39a;
     })
   }
 
@@ -305,7 +293,7 @@ export struct TEST03 {
         ForEach(this.scienceKeys, (key: KeyDef) => {
           Button(key.label)
             .fontSize(key.fontSize)
-            .fontColor(0x333333)
+            .fontColor($r('app.color.text_primary'))
             .backgroundColor(key.bgColor)
             .height(32)
             .width(52)
@@ -318,8 +306,8 @@ export struct TEST03 {
           .fontSize(12)
           .height(32)
           .width(52)
-          .backgroundColor(0x0A59F7)
-          .fontColor(0xFFFFFF)
+          .backgroundColor($r('app.color.accent'))
+          .fontColor($r('app.color.accent_on'))
           .onClick(() => {
             this.onFunc('DEG');
           })
@@ -336,7 +324,7 @@ export struct TEST03 {
       ForEach(this.recentEntries(), (entry: HistoryEntry, index: number) => {
         Text(`${entry.expr} = ${entry.result}`)
           .fontSize(14)
-          .fontColor(0x9fa39a)
+          .fontColor($r('app.color.text_tertiary'))
           .maxLines(1)
           .textOverflow({ overflow: TextOverflow.Ellipsis })
       }, (entry: HistoryEntry, index: number) => `hist-${index}-${entry.expr}-${entry.result}`)
@@ -354,9 +342,9 @@ export struct TEST03 {
 
       Row() {
         Text(this.operate)
-          .fontSize(this.frontSizeOp)
+          .fontSize(this.answerAnimate ? 30 : 50)
           .fontWeight(FontWeight.Medium)
-          .fontColor(this.frontColorOp)
+          .fontColor(this.answerAnimate ? $r('app.color.text_tertiary') : $r('app.color.text_primary'))
       }
       .width('90%')
       .height(70)
@@ -364,9 +352,9 @@ export struct TEST03 {
 
       Row() {
         Text(this.answer)
-          .fontSize(this.frontSizeAns)
+          .fontSize(this.answerAnimate ? 50 : 30)
           .fontWeight(FontWeight.Medium)
-          .fontColor(this.frontColorAns)
+          .fontColor(this.answerAnimate ? $r('app.color.text_primary') : $r('app.color.text_tertiary'))
       }
       .width('90%')
       .height(70)
@@ -401,7 +389,7 @@ export struct TEST03 {
       }
       .width('100%')
       .height('100%')
-      .backgroundColor('rgb(242,242,242)')
+      .backgroundColor($r('app.color.surface_bg'))
     }
     .title($r('app.string.entry_test03'))
   }

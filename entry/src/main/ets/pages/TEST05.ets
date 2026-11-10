@@ -15,7 +15,8 @@ export struct TEST05 {
   @State offsetX: number = 0;
   /** 缩放与颜色 */
   @State boxScale: number = 1;
-  @State boxColor: number = 0x0A59F7;
+  /** 主色状态：true 用主色，false 用警示色 */
+  @State boxAccent: boolean = true;
   /** 列表增删 */
   @State items: number[] = [1, 2, 3];
   @State nextId: number = 4;
@@ -29,7 +30,7 @@ export struct TEST05 {
   private toggleScaleAndColor(): void {
     this.getUIContext().animateTo({ duration: 400, curve: curves.springMotion() }, () => {
       this.boxScale = this.boxScale === 1 ? 1.35 : 1;
-      this.boxColor = this.boxColor === 0x0A59F7 ? 0xE84026 : 0x0A59F7;
+      this.boxAccent = !this.boxAccent;
     })
   }
 
@@ -48,7 +49,7 @@ export struct TEST05 {
   SectionTitle(text: Resource) {
     Text(text)
       .fontSize(14)
-      .fontColor(0x666666)
+      .fontColor($r('app.color.text_secondary'))
       .width('100%')
   }
 
@@ -72,12 +73,12 @@ export struct TEST05 {
             Row() {
               Text('▶')
                 .fontSize(28)
-                .fontColor(0x0A59F7)
+                .fontColor($r('app.color.accent'))
                 .translate({ x: this.offsetX })
             }
             .width('100%')
             .height(60)
-            .backgroundColor(0xFFFFFF)
+            .backgroundColor($r('app.color.card_bg'))
             .borderRadius(12)
             .padding({ left: 16 })
             .justifyContent(FlexAlign.Start)
@@ -91,7 +92,7 @@ export struct TEST05 {
                 .width(64)
                 .height(64)
                 .borderRadius(this.boxScale === 1 ? 12 : 32)
-                .backgroundColor(this.boxColor)
+                .backgroundColor(this.boxAccent ? $r('app.color.accent') : $r('app.color.danger'))
                 .scale({ x: this.boxScale, y: this.boxScale })
               Button('toggle').fontSize(13).height(34)
                 .onClick(() => this.toggleScaleAndColor())
@@ -112,11 +113,11 @@ export struct TEST05 {
             Column({ space: 6 }) {
               ForEach(this.items, (item: number) => {
                 Row() {
-                  Text(`item ${item}`).fontSize(14).fontColor(0x333333)
+                  Text(`item ${item}`).fontSize(14).fontColor($r('app.color.text_primary'))
                 }
                 .width('100%')
                 .height(36)
-                .backgroundColor(0xFFFFFF)
+                .backgroundColor($r('app.color.card_bg'))
                 .borderRadius(8)
                 .padding({ left: 12 })
                 .transition(TransitionEffect.OPACITY.animation({ duration: 300 }))
@@ -131,7 +132,7 @@ export struct TEST05 {
       .width('100%')
       .height('100%')
       .align(Alignment.Top)
-      .backgroundColor('#F5F7FA')
+      .backgroundColor($r('app.color.surface_bg'))
     }
     .title($r('app.string.entry_test05'))
   }

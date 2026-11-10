@@ -2,7 +2,7 @@ class DividerTmp {
   strokeWidth: Length = 1
   startMargin: Length = 60
   endMargin: Length = 10
-  color: ResourceColor = '#ffe9f0f0'
+  color: ResourceColor = $r('app.color.divider')
 
   constructor(strokeWidth: Length, startMargin: Length, endMargin: Length, color: ResourceColor) {
     this.strokeWidth = strokeWidth
@@ -15,7 +15,7 @@ class DividerTmp {
 @Component
 export struct TEST01 {
   @State chinese: boolean = false;
-  @State egDivider: DividerTmp = new DividerTmp(1, 60, 10, '#ffe9f0f0')
+  @State egDivider: DividerTmp = new DividerTmp(1, 60, 10, $r('app.color.divider'))
   @State egLanes: LengthConstrain = { minLength: 200, maxLength: 300 }
 
   build() {
@@ -74,7 +74,7 @@ export struct TEST01 {
             }
           }
         }
-        .backgroundColor('#FFF1F3F5')
+        .backgroundColor($r('app.color.surface_bg'))
         .height('100%')
         .width('100%')
         .constraintSize({ maxWidth: 640 })

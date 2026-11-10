@@ -117,7 +117,7 @@ struct Index {
   GroupHeader(group: string) {
     Text(group === GROUP_BASIC ? $r('app.string.group_basic') : $r('app.string.group_advanced'))
       .fontSize(13)
-      .fontColor(0x999999)
+      .fontColor($r('app.color.text_tertiary'))
       .width('100%')
       .padding({ top: 8, bottom: 4 })
   }
@@ -134,17 +134,17 @@ struct Index {
         if (this.nickname !== '') {
           Text($r('app.string.home_greeting', this.nickname))
             .fontSize(13)
-            .fontColor(0x666666)
+            .fontColor($r('app.color.text_secondary'))
             .width('100%')
         }
       }
       .width('100%')
 
       TextInput({ text: this.keyword, placeholder: $r('app.string.search_placeholder') })
-        .placeholderColor(0x999999)
+        .placeholderColor($r('app.color.text_tertiary'))
         .fontSize(14)
         .height(38)
-        .backgroundColor(0xFFFFFF)
+        .backgroundColor($r('app.color.card_bg'))
         .borderRadius(10)
         .onChange((value: string) => {
           this.keyword = value;
@@ -153,7 +153,7 @@ struct Index {
       if (this.visibleEntries(GROUP_BASIC).length === 0 && this.visibleEntries(GROUP_ADVANCED).length === 0) {
         Text($r('app.string.search_empty'))
           .fontSize(13)
-          .fontColor(0x999999)
+          .fontColor($r('app.color.text_tertiary'))
           .width('100%')
           .padding({ top: 24 })
       } else {
@@ -193,6 +193,7 @@ struct Index {
       this.navBar()
     }
     .hideTitleBar(true)
+    .backgroundColor($r('app.color.page_bg'))
     .mode(NavigationMode.Auto)
     .navBarWidth(280)
     .navBarWidthRange([240, 320])

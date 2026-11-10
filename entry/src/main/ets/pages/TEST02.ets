@@ -27,7 +27,7 @@ export struct TEST02 {
             Text($r('app.string.person_format', item.name, item.age))
               .fontSize(20)
           }, (item: PEOPLE_DATA, index?: number) => `${index}-${item.name}`)
-        }.width('100%').height(300).backgroundColor('rgb(242,242,242)').justifyContent(FlexAlign.SpaceEvenly)
+        }.width('100%').height(300).backgroundColor($r('app.color.page_bg')).justifyContent(FlexAlign.SpaceEvenly)
         .constraintSize({ maxWidth: 480 })
       }
       .height('100%')

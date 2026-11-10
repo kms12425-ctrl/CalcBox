@@ -44,10 +44,10 @@ export struct TEST04 {
       Text(`#${item.id + 1}`)
         .fontSize(24)
         .fontWeight(FontWeight.Bold)
-        .fontColor(0x333333)
+        .fontColor($r('app.color.palette_text'))
       Text(this.selectedId === item.id ? '✓' : ' ')
         .fontSize(16)
-        .fontColor(0x0A59F7)
+        .fontColor($r('app.color.accent'))
     }
     .width('100%')
     .height(96)
@@ -55,7 +55,7 @@ export struct TEST04 {
     .backgroundColor(item.color)
     .borderRadius(12)
     .borderWidth(this.selectedId === item.id ? 2 : 0)
-    .borderColor(0x0A59F7)
+    .borderColor($r('app.color.accent'))
     .onClick(() => {
       this.selectedId = this.selectedId === item.id ? -1 : item.id;
     })
@@ -66,7 +66,7 @@ export struct TEST04 {
       Column({ space: 12 }) {
         Text($r('app.string.grid_hint'))
           .fontSize(14)
-          .fontColor(0x666666)
+          .fontColor($r('app.color.text_secondary'))
           .width('100%')
 
         Grid() {
