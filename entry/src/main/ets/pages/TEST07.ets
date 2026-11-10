@@ -42,10 +42,14 @@ export struct TEST07 {
     saveSetting(context, KEY_FONT_SCALE, this.fontScale);
     // 同步到内存，首页通过 @StorageProp 读取
     AppStorage.setOrCreate<string>(STORAGE_NICKNAME, this.nickname);
-    this.getUIContext().getPromptAction().showToast({
-      message: $r('app.string.settings_saved'),
-      duration: 1500
-    });
+    try {
+      this.getUIContext().getPromptAction().showToast({
+        message: $r('app.string.settings_saved'),
+        duration: 1500
+      });
+    } catch (error) {
+      // 提示失败不影响保存结果
+    }
   }
 
   @Builder

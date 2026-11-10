@@ -38,10 +38,14 @@ export struct TEST06 {
   }
 
   private submit(): void {
-    this.getUIContext().getPromptAction().showToast({
-      message: $r('app.string.form_ok'),
-      duration: 2000
-    });
+    try {
+      this.getUIContext().getPromptAction().showToast({
+        message: $r('app.string.form_ok'),
+        duration: 2000
+      });
+    } catch (error) {
+      // 提示失败不影响校验结果
+    }
   }
 
   build() {

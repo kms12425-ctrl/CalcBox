@@ -16,17 +16,13 @@ export const KEY_FONT_SCALE: string = 'font_scale';
 /** AppStorage 中共享给首页的键名 */
 export const STORAGE_NICKNAME: string = 'nickname';
 
-function openStore(context: common.Context): preferences.Preferences {
-  const options: preferences.Options = { name: STORE_NAME };
-  return preferences.getPreferencesSync(context, options);
-}
-
 /**
  * 读取字符串设置，读取失败时返回默认值。
  */
 export function loadSetting(context: common.Context, key: string, defaultValue: string): string {
   try {
-    const store: preferences.Preferences = openStore(context);
+    const options: preferences.Options = { name: STORE_NAME };
+    const store: preferences.Preferences = preferences.getPreferencesSync(context, options);
     return store.getSync(key, defaultValue) as string;
   } catch (error) {
     return defaultValue;
@@ -38,7 +34,8 @@ export function loadSetting(context: common.Context, key: string, defaultValue: 
  */
 export function saveSetting(context: common.Context, key: string, value: string): void {
   try {
-    const store: preferences.Preferences = openStore(context);
+    const options: preferences.Options = { name: STORE_NAME };
+    const store: preferences.Preferences = preferences.getPreferencesSync(context, options);
     store.putSync(key, value);
     store.flush();
   } catch (error) {
