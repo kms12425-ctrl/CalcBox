@@ -103,6 +103,42 @@
     {
       "name": "about_footer",
       "value": "Built with ArkTS and ArkUI for learning purposes."
+    },
+    {
+      "name": "tool_unit",
+      "value": "Unit converter"
+    },
+    {
+      "name": "unit_length",
+      "value": "Length"
+    },
+    {
+      "name": "unit_weight",
+      "value": "Weight"
+    },
+    {
+      "name": "unit_temperature",
+      "value": "Temperature"
+    },
+    {
+      "name": "unit_area",
+      "value": "Area"
+    },
+    {
+      "name": "unit_value",
+      "value": "Value"
+    },
+    {
+      "name": "unit_from",
+      "value": "From"
+    },
+    {
+      "name": "unit_to",
+      "value": "To"
+    },
+    {
+      "name": "unit_result",
+      "value": "Result"
     }
   ]
 }

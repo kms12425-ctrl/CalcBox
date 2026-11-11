@@ -1,6 +1,7 @@
 import { common } from '@kit.AbilityKit';
-import { ROUTE_ABOUT, ROUTE_CALCULATOR, ROUTE_SETTINGS } from '../utils/routes';
+import { ROUTE_ABOUT, ROUTE_CALCULATOR, ROUTE_SETTINGS, ROUTE_UNIT } from '../utils/routes';
 import { Calculator } from './tools/Calculator';
+import { UnitConvert } from './tools/UnitConvert';
 import { Settings } from './Settings';
 import { About } from './About';
 
@@ -37,8 +38,9 @@ class ToolItem {
 
 const TOOL_SPECS: ToolSpec[] = [
   new ToolSpec(ROUTE_CALCULATOR, 'tool_calculator', '#E8F0FE'),
-  new ToolSpec(ROUTE_SETTINGS, 'tool_settings', '#E6F4EA'),
-  new ToolSpec(ROUTE_ABOUT, 'tool_about', '#F3E8FD')
+  new ToolSpec(ROUTE_UNIT, 'tool_unit', '#E6F4EA'),
+  new ToolSpec(ROUTE_SETTINGS, 'tool_settings', '#ECEFF1'),
+  new ToolSpec(ROUTE_ABOUT, 'tool_about', '#F1F3F4')
 ];
 
 @Entry
@@ -89,6 +91,8 @@ struct Index {
   pageMap(name: string) {
     if (name === ROUTE_CALCULATOR) {
       Calculator()
+    } else if (name === ROUTE_UNIT) {
+      UnitConvert()
     } else if (name === ROUTE_SETTINGS) {
       Settings()
     } else if (name === ROUTE_ABOUT) {

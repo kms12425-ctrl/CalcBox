@@ -103,6 +103,42 @@
     {
       "name": "about_footer",
       "value": "使用 ArkTS 与 ArkUI 构建，仅用于学习。"
+    },
+    {
+      "name": "tool_unit",
+      "value": "单位换算"
+    },
+    {
+      "name": "unit_length",
+      "value": "长度"
+    },
+    {
+      "name": "unit_weight",
+      "value": "重量"
+    },
+    {
+      "name": "unit_temperature",
+      "value": "温度"
+    },
+    {
+      "name": "unit_area",
+      "value": "面积"
+    },
+    {
+      "name": "unit_value",
+      "value": "数值"
+    },
+    {
+      "name": "unit_from",
+      "value": "从"
+    },
+    {
+      "name": "unit_to",
+      "value": "到"
+    },
+    {
+      "name": "unit_result",
+      "value": "结果"
     }
   ]
 }
