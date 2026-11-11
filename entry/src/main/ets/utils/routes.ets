@@ -1,11 +1,11 @@
 /**
- * 路由名常量：Index 的 pageMap 与首页入口按钮共用同一份定义，避免字符串拼写不一致。
+ * 路由名常量：首页工具网格与 Index 的 pageMap 共用同一份定义。
  */
-export const ROUTE_TEST01: string = 'TEST01';
-export const ROUTE_TEST02: string = 'TEST02';
-export const ROUTE_TEST03: string = 'TEST03';
-export const ROUTE_TEST04: string = 'TEST04';
-export const ROUTE_TEST05: string = 'TEST05';
-export const ROUTE_TEST06: string = 'TEST06';
-export const ROUTE_TEST07: string = 'TEST07';
-export const ROUTE_TEST08: string = 'TEST08';
+export const ROUTE_CALCULATOR: string = 'Calculator';
+export const ROUTE_UNIT: string = 'UnitConvert';
+export const ROUTE_BASE: string = 'BaseConvert';
+export const ROUTE_DATE: string = 'DateCalc';
+export const ROUTE_PERCENT: string = 'Percent';
+export const ROUTE_RMB: string = 'RmbUpper';
+export const ROUTE_SETTINGS: string = 'Settings';
+export const ROUTE_ABOUT: string = 'About';

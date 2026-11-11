@@ -1,72 +1,72 @@
 import { common } from '@kit.AbilityKit';
-import {
-  ROUTE_TEST01, ROUTE_TEST02, ROUTE_TEST03, ROUTE_TEST04,
-  ROUTE_TEST05, ROUTE_TEST06, ROUTE_TEST07, ROUTE_TEST08
-} from '../utils/routes';
-import { TEST01 } from './TEST01';
-import { TEST02 } from './TEST02';
-import { TEST03 } from './TEST03';
-import { TEST04 } from './TEST04';
-import { TEST05 } from './TEST05';
-import { TEST06 } from './TEST06';
-import { TEST07 } from './TEST07';
-import { TEST08 } from './TEST08';
+import { ROUTE_ABOUT, ROUTE_CALCULATOR, ROUTE_SETTINGS } from '../utils/routes';
+import { Calculator } from './tools/Calculator';
+import { Settings } from './Settings';
+import { About } from './About';
 
-/** 宽屏判定阈值：与 Navigation 的 navBarWidth + minContentWidth 大致对齐 */
+/** 列数断点：手机两列，平板三列，2in1 四列 */
+const THREE_COLUMN_WIDTH: number = 520;
+const FOUR_COLUMN_WIDTH: number = 720;
+
+/** 宽屏判定：进入宽屏时自动选中默认工具 */
 const WIDE_BREAKPOINT: number = 600;
 
-/** 宽屏下默认选中的实验页 */
-const ROUTE_DEFAULT: string = ROUTE_TEST08;
+const ROUTE_DEFAULT: string = ROUTE_CALCULATOR;
 
-const GROUP_BASIC: string = 'basic';
-const GROUP_ADVANCED: string = 'advanced';
-
-/** 入口定义：路由、显示文案（运行时按当前语言取），以及所属分组 */
-class EntryDef {
+/**
+ * 工具定义：路由、文案资源名、卡片底色。
+ * 文案在运行时按当前语言解析，便于搜索与显示保持一致。
+ */
+class ToolSpec {
   route: string = '';
-  label: string = '';
-  group: string = GROUP_BASIC;
+  resName: string = '';
+  color: string = '';
+
+  constructor(route: string, resName: string, color: string) {
+    this.route = route;
+    this.resName = resName;
+    this.color = color;
+  }
 }
 
-/** 与 routes.ets 一一对应的资源名，用于在运行时取到本地化文案 */
-const ENTRY_ROUTES: string[] = [
-  ROUTE_TEST01, ROUTE_TEST02, ROUTE_TEST03, ROUTE_TEST04,
-  ROUTE_TEST05, ROUTE_TEST06, ROUTE_TEST07, ROUTE_TEST08
-];
+class ToolItem {
+  route: string = '';
+  label: string = '';
+  color: string = '';
+}
 
-const ENTRY_RES_NAMES: string[] = [
-  'entry_test01', 'entry_test02', 'entry_test03', 'entry_test04',
-  'entry_test05', 'entry_test06', 'entry_test07', 'entry_test08'
+const TOOL_SPECS: ToolSpec[] = [
+  new ToolSpec(ROUTE_CALCULATOR, 'tool_calculator', '#E8F0FE'),
+  new ToolSpec(ROUTE_SETTINGS, 'tool_settings', '#E6F4EA'),
+  new ToolSpec(ROUTE_ABOUT, 'tool_about', '#F3E8FD')
 ];
 
 @Entry
 @Component
 struct Index {
   @Provide('navStack') pathStack: NavPathStack = new NavPathStack();
-  /** 由 TEST07 的设置页写入 AppStorage，首页实时显示 */
+  /** 由 Settings 页写入 AppStorage */
   @StorageProp('nickname') nickname: string = '';
-  /** 是否只自动选中过一次，避免旋转屏幕时反复 push */
   private autoSelected: boolean = false;
 
   @State keyword: string = '';
-  @State entries: EntryDef[] = [];
+  @State columnsTemplate: string = '1fr 1fr';
+  @State tools: ToolItem[] = [];
 
   aboutToAppear(): void {
     const context: common.Context = this.getUIContext().getHostContext() as common.Context;
-    const list: EntryDef[] = [];
-    for (let i = 0; i < ENTRY_ROUTES.length; i++) {
-      const entry: EntryDef = new EntryDef();
-      entry.route = ENTRY_ROUTES[i];
-      entry.label = this.resolveText(context, ENTRY_RES_NAMES[i]);
-      entry.group = i < 3 ? GROUP_BASIC : GROUP_ADVANCED;
-      list.push(entry);
+    const list: ToolItem[] = [];
+    for (let i = 0; i < TOOL_SPECS.length; i++) {
+      const spec: ToolSpec = TOOL_SPECS[i];
+      const item: ToolItem = new ToolItem();
+      item.route = spec.route;
+      item.label = this.resolveText(context, spec.resName);
+      item.color = spec.color;
+      list.push(item);
     }
-    this.entries = list;
+    this.tools = list;
   }
 
-  /**
-   * 取当前语言下的文案：显示与搜索共用同一份文本，避免“看到的中文搜不到”。
-   */
   private resolveText(context: common.Context, name: string): string {
     try {
       return context.resourceManager.getStringByNameSync(name);
@@ -75,68 +75,60 @@ struct Index {
     }
   }
 
-  /** 按关键字过滤（忽略大小写，同时匹配显示文案与路由名） */
-  private visibleEntries(group: string): EntryDef[] {
+  private visibleTools(): ToolItem[] {
     const key: string = this.keyword.trim().toLowerCase();
-    return this.entries.filter((item: EntryDef) => {
-      if (item.group !== group) {
-        return false;
-      }
-      if (key === '') {
-        return true;
-      }
+    if (key === '') {
+      return this.tools;
+    }
+    return this.tools.filter((item: ToolItem) => {
       return item.label.toLowerCase().indexOf(key) >= 0 || item.route.toLowerCase().indexOf(key) >= 0;
     });
   }
 
-  /**
-   * 路由表：名称由 utils/routes.ets 统一维护，与首页入口一一对应。
-   */
   @Builder
   pageMap(name: string) {
-    if (name === ROUTE_TEST01) {
-      TEST01()
-    } else if (name === ROUTE_TEST02) {
-      TEST02()
-    } else if (name === ROUTE_TEST03) {
-      TEST03()
-    } else if (name === ROUTE_TEST04) {
-      TEST04()
-    } else if (name === ROUTE_TEST05) {
-      TEST05()
-    } else if (name === ROUTE_TEST06) {
-      TEST06()
-    } else if (name === ROUTE_TEST07) {
-      TEST07()
-    } else if (name === ROUTE_TEST08) {
-      TEST08()
+    if (name === ROUTE_CALCULATOR) {
+      Calculator()
+    } else if (name === ROUTE_SETTINGS) {
+      Settings()
+    } else if (name === ROUTE_ABOUT) {
+      About()
     }
   }
 
   @Builder
-  GroupHeader(group: string) {
-    Text(group === GROUP_BASIC ? $r('app.string.group_basic') : $r('app.string.group_advanced'))
-      .fontSize(13)
-      .fontColor($r('app.color.text_tertiary'))
-      .width('100%')
-      .padding({ top: 8, bottom: 4 })
+  ToolCard(item: ToolItem) {
+    Column({ space: 6 }) {
+      Text(item.label)
+        .fontSize(15)
+        .fontWeight(FontWeight.Medium)
+        .fontColor($r('app.color.palette_text'))
+        .textAlign(TextAlign.Center)
+        .maxLines(2)
+        .textOverflow({ overflow: TextOverflow.Ellipsis })
+    }
+    .width('100%')
+    .height(92)
+    .justifyContent(FlexAlign.Center)
+    .backgroundColor(item.color)
+    .borderRadius(14)
+    .onClick(() => {
+      this.pathStack.pushPathByName(item.route, null)
+    })
   }
 
   @Builder
-  navBar() {
-    Column({ space: 10 }) {
-      Column({ space: 4 }) {
+  homePanel() {
+    Column({ space: 12 }) {
+      Column({ space: 2 }) {
         Text($r('app.string.home_title'))
-          .fontSize(24)
+          .fontSize(26)
           .fontWeight(FontWeight.Bold)
           .width('100%')
-          .textAlign(TextAlign.Start)
-        if (this.nickname !== '') {
-          Text($r('app.string.home_greeting', this.nickname))
-            .fontSize(13)
-            .fontColor($r('app.color.text_secondary'))
-            .width('100%')
-        }
+        Text(this.nickname === '' ? $r('app.string.home_subtitle') : $r('app.string.home_greeting', this.nickname))
+          .fontSize(13)
+          .fontColor($r('app.color.text_secondary'))
+          .width('100%')
       }
       .width('100%')
 
@@ -150,57 +142,54 @@ struct Index {
           this.keyword = value;
         })
 
-      if (this.visibleEntries(GROUP_BASIC).length === 0 && this.visibleEntries(GROUP_ADVANCED).length === 0) {
+      if (this.visibleTools().length === 0) {
         Text($r('app.string.search_empty'))
           .fontSize(13)
           .fontColor($r('app.color.text_tertiary'))
           .width('100%')
           .padding({ top: 24 })
       } else {
-        List({ space: 8 }) {
-          ForEach([GROUP_BASIC, GROUP_ADVANCED], (group: string) => {
-            if (this.visibleEntries(group).length > 0) {
-              ListItem() {
-                this.GroupHeader(group)
-              }
+        Grid() {
+          ForEach(this.visibleTools(), (item: ToolItem) => {
+            GridItem() {
+              this.ToolCard(item)
             }
-            ForEach(this.visibleEntries(group), (entry: EntryDef) => {
-              ListItem() {
-                Button(entry.label)
-                  .width('100%')
-                  .borderRadius(20)
-                  .height(40)
-                  .fontSize(14)
-                  .onClick(() => {
-                    this.pathStack.pushPathByName(entry.route, null)
-                  })
-              }
-            }, (entry: EntryDef) => entry.route)
-          }, (group: string) => group)
+          }, (item: ToolItem) => item.route)
         }
-        .layoutWeight(1)
+        .columnsTemplate(this.columnsTemplate)
+        .columnsGap(12)
+        .rowsGap(12)
         .width('100%')
-        .scrollBar(BarState.Off)
+        .layoutWeight(1)
+        .onAreaChange((oldArea: Area, newArea: Area) => {
+          const width: number = newArea.width as number;
+          if (width >= FOUR_COLUMN_WIDTH) {
+            this.columnsTemplate = '1fr 1fr 1fr 1fr';
+          } else if (width >= THREE_COLUMN_WIDTH) {
+            this.columnsTemplate = '1fr 1fr 1fr';
+          } else {
+            this.columnsTemplate = '1fr 1fr';
+          }
+        })
       }
     }
     .width('100%')
     .height('100%')
-    .padding({ left: 16, right: 16, top: 16, bottom: 16 })
+    .padding(16)
   }
 
   build() {
     Navigation(this.pathStack) {
-      this.navBar()
+      this.homePanel()
     }
     .hideTitleBar(true)
     .backgroundColor($r('app.color.page_bg'))
     .mode(NavigationMode.Auto)
-    .navBarWidth(280)
-    .navBarWidthRange([240, 320])
+    .navBarWidth(300)
+    .navBarWidthRange([260, 340])
     .navDestination(this.pageMap)
     .onAreaChange((oldArea: Area, newArea: Area) => {
       const width: number = newArea.width as number;
-      // 宽屏首次进入时自动选中默认实验，避免右侧空白
       if (width >= WIDE_BREAKPOINT && !this.autoSelected) {
         this.autoSelected = true;
         setTimeout(() => {

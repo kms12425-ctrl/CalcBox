@@ -1,7 +1,7 @@
 import { curves } from '@kit.ArkUI';
 import { common } from '@kit.AbilityKit';
-import { EvalResult, canAppendDot, isLastCharNotDigit, tryEvaluate } from '../utils/expression';
-import { HistoryEntry, MAX_HISTORY, loadHistory, saveHistory } from '../utils/history';
+import { EvalResult, canAppendDot, isLastCharNotDigit, tryEvaluate } from '../../utils/expression';
+import { HistoryEntry, MAX_HISTORY, loadHistory, saveHistory } from '../../utils/history';
 
 /**
  * 按键类别，决定点击后走哪条处理分支。
@@ -55,7 +55,7 @@ function makeKey(label: string, kind: KeyKind, value: string, bgColor: ResourceC
 }
 
 @Component
-export struct TEST03 {
+export struct Calculator {
   @State operate: string = '';
   @State answer: ResourceStr = '';
   @State answerAnimate: boolean = false;
@@ -391,6 +391,6 @@ export struct TEST03 {
       .height('100%')
       .backgroundColor($r('app.color.surface_bg'))
     }
-    .title($r('app.string.entry_test03'))
+    .title($r('app.string.tool_calculator'))
   }
 }

@@ -9,7 +9,7 @@ import { bundleManager } from '@kit.AbilityKit';
  */
 
 @Component
-export struct TEST08 {
+export struct About {
   @State versionName: string = '-';
   @State versionCode: string = '-';
   @State bundleNameValue: string = '-';
@@ -51,7 +51,7 @@ export struct TEST08 {
     NavDestination() {
       Scroll() {
         Column({ space: 4 }) {
-          Text($r('app.string.entry_test08'))
+          Text($r('app.string.tool_about'))
             .fontSize(20)
             .fontWeight(FontWeight.Bold)
             .width('100%')
@@ -69,7 +69,7 @@ export struct TEST08 {
           this.DividerLine()
           this.InfoRow($r('app.string.about_deps'), 'hypium 1.0.29 / hamock 1.0.0')
           this.DividerLine()
-          this.InfoRow($r('app.string.about_pages'), 'Index + TEST01 ~ TEST08')
+          this.InfoRow($r('app.string.about_pages'), 'Home + Calculator + Settings + About')
 
           Text($r('app.string.about_footer'))
             .fontSize(12)
@@ -85,6 +85,6 @@ export struct TEST08 {
       .align(Alignment.Top)
       .backgroundColor($r('app.color.surface_bg'))
     }
-    .title($r('app.string.entry_test08'))
+    .title($r('app.string.tool_about'))
   }
 }

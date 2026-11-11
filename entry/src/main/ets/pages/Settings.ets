@@ -26,7 +26,7 @@ function sizeOfScale(scale: string): number {
 }
 
 @Component
-export struct TEST07 {
+export struct Settings {
   @State nickname: string = '';
   @State fontScale: string = SCALE_M;
 
@@ -120,6 +120,6 @@ export struct TEST07 {
       .align(Alignment.Top)
       .backgroundColor($r('app.color.surface_bg'))
     }
-    .title($r('app.string.entry_test07'))
+    .title($r('app.string.tool_settings'))
   }
 }

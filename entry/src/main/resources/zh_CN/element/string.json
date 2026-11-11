@@ -13,108 +13,40 @@
       "value": "label"
     },
     {
-      "name": "entry_test01",
-      "value": "进入测试1-图片&按钮"
+      "name": "home_title",
+      "value": "HarmonyCalc"
     },
     {
-      "name": "entry_test02",
-      "value": "进入测试2-数据渲染"
+      "name": "home_subtitle",
+      "value": "工具箱"
     },
     {
-      "name": "entry_test03",
-      "value": "进入测试3-计算器"
+      "name": "search_placeholder",
+      "value": "搜索工具"
     },
     {
-      "name": "entry_test04",
-      "value": "进入测试4"
+      "name": "search_empty",
+      "value": "没有匹配的工具"
     },
     {
-      "name": "entry_test05",
-      "value": "进入测试5"
+      "name": "home_greeting",
+      "value": "你好，%s"
     },
     {
-      "name": "entry_test06",
-      "value": "进入测试6"
+      "name": "tool_calculator",
+      "value": "计算器"
     },
     {
-      "name": "entry_test07",
-      "value": "进入测试7"
+      "name": "tool_settings",
+      "value": "设置"
     },
     {
-      "name": "entry_test08",
-      "value": "进入测试8"
-    },
-    {
-      "name": "action_translate",
-      "value": "翻译"
-    },
-    {
-      "name": "greet_en",
-      "value": "Hi, Iam "
-    },
-    {
-      "name": "greet_zh",
-      "value": "你好，我是"
-    },
-    {
-      "name": "person_format",
-      "value": "姓名: %s 年龄: %s"
+      "name": "tool_about",
+      "value": "关于"
     },
     {
       "name": "cannot_compute",
       "value": "无法计算"
-    },
-    {
-      "name": "home_title",
-      "value": "实验目录"
-    },
-    {
-      "name": "grid_hint",
-      "value": "点击卡片可选中，列数随宽度自适应"
-    },
-    {
-      "name": "anim_move",
-      "value": "位移（对比三种曲线）"
-    },
-    {
-      "name": "anim_scale",
-      "value": "缩放与颜色"
-    },
-    {
-      "name": "anim_list",
-      "value": "列表增删过渡"
-    },
-    {
-      "name": "form_name",
-      "value": "姓名"
-    },
-    {
-      "name": "form_email",
-      "value": "邮箱"
-    },
-    {
-      "name": "form_age",
-      "value": "年龄"
-    },
-    {
-      "name": "err_name",
-      "value": "至少需要 2 个字符"
-    },
-    {
-      "name": "err_email",
-      "value": "邮箱格式不正确"
-    },
-    {
-      "name": "err_age",
-      "value": "请输入 1 到 120 之间的整数"
-    },
-    {
-      "name": "form_submit",
-      "value": "提交"
-    },
-    {
-      "name": "form_ok",
-      "value": "校验通过，已提交"
     },
     {
       "name": "settings_nickname",
@@ -139,10 +71,6 @@
     {
       "name": "settings_saved",
       "value": "已保存"
-    },
-    {
-      "name": "home_greeting",
-      "value": "你好，%s"
     },
     {
       "name": "about_version_name",
@@ -175,22 +103,6 @@
     {
       "name": "about_footer",
       "value": "使用 ArkTS 与 ArkUI 构建，仅用于学习。"
-    },
-    {
-      "name": "search_placeholder",
-      "value": "搜索实验"
-    },
-    {
-      "name": "group_basic",
-      "value": "基础"
-    },
-    {
-      "name": "group_advanced",
-      "value": "进阶"
-    },
-    {
-      "name": "search_empty",
-      "value": "没有匹配的实验"
     }
   ]
 }

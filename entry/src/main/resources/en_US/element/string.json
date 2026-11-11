@@ -13,108 +13,40 @@
       "value": "label"
     },
     {
-      "name": "entry_test01",
-      "value": "Test 1 - Images & Buttons"
+      "name": "home_title",
+      "value": "HarmonyCalc"
     },
     {
-      "name": "entry_test02",
-      "value": "Test 2 - Data Rendering"
+      "name": "home_subtitle",
+      "value": "Toolbox"
     },
     {
-      "name": "entry_test03",
-      "value": "Test 3 - Calculator"
+      "name": "search_placeholder",
+      "value": "Search tools"
     },
     {
-      "name": "entry_test04",
-      "value": "Test 4"
+      "name": "search_empty",
+      "value": "No matching tool"
     },
     {
-      "name": "entry_test05",
-      "value": "Test 5"
+      "name": "home_greeting",
+      "value": "Hi, %s"
     },
     {
-      "name": "entry_test06",
-      "value": "Test 6"
+      "name": "tool_calculator",
+      "value": "Calculator"
     },
     {
-      "name": "entry_test07",
-      "value": "Test 7"
+      "name": "tool_settings",
+      "value": "Settings"
     },
     {
-      "name": "entry_test08",
-      "value": "Test 8"
-    },
-    {
-      "name": "action_translate",
-      "value": "Translate"
-    },
-    {
-      "name": "greet_en",
-      "value": "Hi, I am "
-    },
-    {
-      "name": "greet_zh",
-      "value": "你好，我是"
-    },
-    {
-      "name": "person_format",
-      "value": "Name: %s   Age: %s"
+      "name": "tool_about",
+      "value": "About"
     },
     {
       "name": "cannot_compute",
       "value": "Cannot compute"
-    },
-    {
-      "name": "home_title",
-      "value": "Experiments"
-    },
-    {
-      "name": "grid_hint",
-      "value": "Tap a card to select it; columns adapt to width"
-    },
-    {
-      "name": "anim_move",
-      "value": "Translate (compare three curves)"
-    },
-    {
-      "name": "anim_scale",
-      "value": "Scale & color"
-    },
-    {
-      "name": "anim_list",
-      "value": "List add/remove transition"
-    },
-    {
-      "name": "form_name",
-      "value": "Name"
-    },
-    {
-      "name": "form_email",
-      "value": "Email"
-    },
-    {
-      "name": "form_age",
-      "value": "Age"
-    },
-    {
-      "name": "err_name",
-      "value": "At least 2 characters"
-    },
-    {
-      "name": "err_email",
-      "value": "Invalid email format"
-    },
-    {
-      "name": "err_age",
-      "value": "Enter an integer between 1 and 120"
-    },
-    {
-      "name": "form_submit",
-      "value": "Submit"
-    },
-    {
-      "name": "form_ok",
-      "value": "Validated and submitted"
     },
     {
       "name": "settings_nickname",
@@ -139,10 +71,6 @@
     {
       "name": "settings_saved",
       "value": "Saved"
-    },
-    {
-      "name": "home_greeting",
-      "value": "Hi, %s"
     },
     {
       "name": "about_version_name",
@@ -175,22 +103,6 @@
     {
       "name": "about_footer",
       "value": "Built with ArkTS and ArkUI for learning purposes."
-    },
-    {
-      "name": "search_placeholder",
-      "value": "Search experiments"
-    },
-    {
-      "name": "group_basic",
-      "value": "Basics"
-    },
-    {
-      "name": "group_advanced",
-      "value": "Advanced"
-    },
-    {
-      "name": "search_empty",
-      "value": "No matching experiment"
     }
   ]
 }
