@@ -151,6 +151,46 @@
     {
       "name": "base_invalid",
       "value": "当前进制下存在非法字符"
+    },
+    {
+      "name": "tool_date",
+      "value": "日期计算"
+    },
+    {
+      "name": "date_diff",
+      "value": "日期差"
+    },
+    {
+      "name": "date_start",
+      "value": "起始日期"
+    },
+    {
+      "name": "date_end",
+      "value": "结束日期"
+    },
+    {
+      "name": "date_diff_result",
+      "value": "相差 %s 天"
+    },
+    {
+      "name": "date_add",
+      "value": "日期推算"
+    },
+    {
+      "name": "date_base",
+      "value": "基准日期"
+    },
+    {
+      "name": "date_offset",
+      "value": "偏移天数"
+    },
+    {
+      "name": "date_offset_invalid",
+      "value": "请输入整数天数"
+    },
+    {
+      "name": "date_result",
+      "value": "结果"
     }
   ]
 }

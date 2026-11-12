@@ -1,7 +1,8 @@
 import { common } from '@kit.AbilityKit';
-import { ROUTE_ABOUT, ROUTE_CALCULATOR, ROUTE_BASE, ROUTE_SETTINGS, ROUTE_UNIT } from '../utils/routes';
+import { ROUTE_ABOUT, ROUTE_CALCULATOR, ROUTE_BASE, ROUTE_DATE, ROUTE_SETTINGS, ROUTE_UNIT } from '../utils/routes';
 import { Calculator } from './tools/Calculator';
 import { BaseConvert } from './tools/BaseConvert';
+import { DateCalc } from './tools/DateCalc';
 import { UnitConvert } from './tools/UnitConvert';
 import { Settings } from './Settings';
 import { About } from './About';
@@ -41,6 +42,7 @@ const TOOL_SPECS: ToolSpec[] = [
   new ToolSpec(ROUTE_CALCULATOR, 'tool_calculator', '#E8F0FE'),
   new ToolSpec(ROUTE_UNIT, 'tool_unit', '#E6F4EA'),
   new ToolSpec(ROUTE_BASE, 'tool_base', '#FEF7E0'),
+  new ToolSpec(ROUTE_DATE, 'tool_date', '#FCE8E6'),
   new ToolSpec(ROUTE_SETTINGS, 'tool_settings', '#ECEFF1'),
   new ToolSpec(ROUTE_ABOUT, 'tool_about', '#F1F3F4')
 ];
@@ -97,6 +99,8 @@ struct Index {
       UnitConvert()
     } else if (name === ROUTE_BASE) {
       BaseConvert()
+    } else if (name === ROUTE_DATE) {
+      DateCalc()
     } else if (name === ROUTE_SETTINGS) {
       Settings()
     } else if (name === ROUTE_ABOUT) {

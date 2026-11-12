@@ -151,6 +151,46 @@
     {
       "name": "base_invalid",
       "value": "Invalid characters for this base"
+    },
+    {
+      "name": "tool_date",
+      "value": "Date calculator"
+    },
+    {
+      "name": "date_diff",
+      "value": "Date difference"
+    },
+    {
+      "name": "date_start",
+      "value": "Start date"
+    },
+    {
+      "name": "date_end",
+      "value": "End date"
+    },
+    {
+      "name": "date_diff_result",
+      "value": "%s days apart"
+    },
+    {
+      "name": "date_add",
+      "value": "Date arithmetic"
+    },
+    {
+      "name": "date_base",
+      "value": "Base date"
+    },
+    {
+      "name": "date_offset",
+      "value": "Offset days"
+    },
+    {
+      "name": "date_offset_invalid",
+      "value": "Enter an integer number of days"
+    },
+    {
+      "name": "date_result",
+      "value": "Result"
     }
   ]
 }
