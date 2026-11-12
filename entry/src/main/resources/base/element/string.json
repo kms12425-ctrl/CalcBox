@@ -139,6 +139,18 @@
     {
       "name": "unit_result",
       "value": "Result"
+    },
+    {
+      "name": "tool_base",
+      "value": "Base converter"
+    },
+    {
+      "name": "base_input",
+      "value": "Input"
+    },
+    {
+      "name": "base_invalid",
+      "value": "Invalid characters for this base"
     }
   ]
 }

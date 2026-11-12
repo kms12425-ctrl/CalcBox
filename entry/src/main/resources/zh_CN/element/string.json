@@ -139,6 +139,18 @@
     {
       "name": "unit_result",
       "value": "结果"
+    },
+    {
+      "name": "tool_base",
+      "value": "进制转换"
+    },
+    {
+      "name": "base_input",
+      "value": "输入"
+    },
+    {
+      "name": "base_invalid",
+      "value": "当前进制下存在非法字符"
     }
   ]
 }
