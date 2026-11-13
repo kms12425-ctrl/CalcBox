@@ -191,6 +191,58 @@
     {
       "name": "date_result",
       "value": "Result"
+    },
+    {
+      "name": "tool_percent",
+      "value": "Percentage"
+    },
+    {
+      "name": "percent_mode_share",
+      "value": "Share"
+    },
+    {
+      "name": "percent_mode_change",
+      "value": "Change"
+    },
+    {
+      "name": "percent_mode_discount",
+      "value": "Discount"
+    },
+    {
+      "name": "percent_hint_share",
+      "value": "Share of A in B"
+    },
+    {
+      "name": "percent_hint_change",
+      "value": "Change from A to B"
+    },
+    {
+      "name": "percent_hint_discount",
+      "value": "Price A with B% discount (80 = 20% off)"
+    },
+    {
+      "name": "percent_a",
+      "value": "Value A"
+    },
+    {
+      "name": "percent_b",
+      "value": "Value B"
+    },
+    {
+      "name": "percent_result_share",
+      "value": "%s%% of total"
+    },
+    {
+      "name": "percent_result_change",
+      "value": "%s%% change"
+    },
+    {
+      "name": "percent_result_discount",
+      "value": "Final %s"
+    },
+    {
+      "name": "percent_invalid",
+      "value": "Cannot compute, check the input or zero divisor"
     }
   ]
 }

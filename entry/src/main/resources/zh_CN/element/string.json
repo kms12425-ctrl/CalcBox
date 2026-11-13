@@ -191,6 +191,58 @@
     {
       "name": "date_result",
       "value": "结果"
+    },
+    {
+      "name": "tool_percent",
+      "value": "百分比"
+    },
+    {
+      "name": "percent_mode_share",
+      "value": "占比"
+    },
+    {
+      "name": "percent_mode_change",
+      "value": "涨跌幅"
+    },
+    {
+      "name": "percent_mode_discount",
+      "value": "折扣"
+    },
+    {
+      "name": "percent_hint_share",
+      "value": "A 占 B 的百分比"
+    },
+    {
+      "name": "percent_hint_change",
+      "value": "从 A 变化到 B 的幅度"
+    },
+    {
+      "name": "percent_hint_discount",
+      "value": "原价 A，折扣 B%（80 表示八折）"
+    },
+    {
+      "name": "percent_a",
+      "value": "数值 A"
+    },
+    {
+      "name": "percent_b",
+      "value": "数值 B"
+    },
+    {
+      "name": "percent_result_share",
+      "value": "占 %s%%"
+    },
+    {
+      "name": "percent_result_change",
+      "value": "变化 %s%%"
+    },
+    {
+      "name": "percent_result_discount",
+      "value": "现价 %s"
+    },
+    {
+      "name": "percent_invalid",
+      "value": "无法计算，请检查输入或除数为 0"
     }
   ]
 }
