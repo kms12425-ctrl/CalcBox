@@ -263,6 +263,18 @@
     {
       "name": "rmb_hint",
       "value": "支持到万亿位，最多两位小数，结果可长按复制"
+    },
+    {
+      "name": "settings_angle",
+      "value": "角度单位"
+    },
+    {
+      "name": "settings_decimals",
+      "value": "小数位数"
+    },
+    {
+      "name": "settings_thousands",
+      "value": "千分位"
     }
   ]
 }

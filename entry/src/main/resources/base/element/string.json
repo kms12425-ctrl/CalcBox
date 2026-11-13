@@ -263,6 +263,18 @@
     {
       "name": "rmb_hint",
       "value": "Supports up to 999,999,999,999.99, two decimals"
+    },
+    {
+      "name": "settings_angle",
+      "value": "Angle unit"
+    },
+    {
+      "name": "settings_decimals",
+      "value": "Decimal places"
+    },
+    {
+      "name": "settings_thousands",
+      "value": "Thousands separator"
     }
   ]
 }

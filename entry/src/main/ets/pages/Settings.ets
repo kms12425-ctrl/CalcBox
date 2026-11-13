@@ -1,45 +1,39 @@
 import { common } from '@kit.AbilityKit';
-import { KEY_FONT_SCALE, KEY_NICKNAME, STORAGE_NICKNAME, loadSetting, saveSetting } from '../utils/settings';
+import {
+  DEFAULT_ANGLE_DEGREES, DEFAULT_DECIMALS, DEFAULT_THOUSANDS,
+  KEY_ANGLE_DEGREES, KEY_DECIMALS, KEY_NICKNAME, KEY_THOUSANDS, STORAGE_NICKNAME,
+  loadBool, loadNumber, loadSetting, saveBool, saveNumber, saveSetting
+} from '../utils/settings';
+import { formatNumberText } from '../utils/format';
+
+/** 可选的小数位数，-1 表示自动 */
+const DECIMAL_CHOICES: number[] = [-1, 0, 2, 4, 6];
 
 /**
- * 设置项与本地持久化示例。
- *
- * 演示点：
- * 1. Preferences 读写：退出应用后再次进入，昵称与字号仍然保留；
- * 2. 状态与存储的同步时机：改完点保存才落盘，而不是每次输入都写；
- * 3. AppStorage 跨页共享：保存后首页能立即看到问候语。
+ * 设置页：昵称、角度单位、小数位数、千分位。
+ * 角度与显示格式会直接影响计算器的计算结果与展示。
  */
-
-/** 字号档位与对应的实际字号 */
-const SCALE_S: string = 'S';
-const SCALE_M: string = 'M';
-const SCALE_L: string = 'L';
-
-function sizeOfScale(scale: string): number {
-  if (scale === SCALE_S) {
-    return 14;
-  }
-  if (scale === SCALE_L) {
-    return 24;
-  }
-  return 18;
-}
-
 @Component
 export struct Settings {
   @State nickname: string = '';
-  @State fontScale: string = SCALE_M;
+  @State angleDegrees: boolean = DEFAULT_ANGLE_DEGREES;
+  @State decimals: number = DEFAULT_DECIMALS;
+  @State thousands: boolean = DEFAULT_THOUSANDS;
 
   aboutToAppear(): void {
     const context: common.Context = this.getUIContext().getHostContext() as common.Context;
     this.nickname = loadSetting(context, KEY_NICKNAME, '');
-    this.fontScale = loadSetting(context, KEY_FONT_SCALE, SCALE_M);
+    this.angleDegrees = loadBool(context, KEY_ANGLE_DEGREES, DEFAULT_ANGLE_DEGREES);
+    this.decimals = loadNumber(context, KEY_DECIMALS, DEFAULT_DECIMALS);
+    this.thousands = loadBool(context, KEY_THOUSANDS, DEFAULT_THOUSANDS);
   }
 
   private remember(): void {
     const context: common.Context = this.getUIContext().getHostContext() as common.Context;
     saveSetting(context, KEY_NICKNAME, this.nickname);
-    saveSetting(context, KEY_FONT_SCALE, this.fontScale);
+    saveBool(context, KEY_ANGLE_DEGREES, this.angleDegrees);
+    saveNumber(context, KEY_DECIMALS, this.decimals);
+    saveBool(context, KEY_THOUSANDS, this.thousands);
     // 同步到内存，首页通过 @StorageProp 读取
     AppStorage.setOrCreate<string>(STORAGE_NICKNAME, this.nickname);
     try {
@@ -53,57 +47,86 @@ export struct Settings {
   }
 
   @Builder
-  ScaleButton(scale: string) {
-    Button(scale)
-      .width(64)
-      .height(36)
-      .fontSize(14)
-      .backgroundColor(this.fontScale === scale ? $r('app.color.accent') : $r('app.color.chip_bg'))
-      .fontColor(this.fontScale === scale ? $r('app.color.accent_on') : $r('app.color.text_primary'))
-      .onClick(() => {
-        this.fontScale = scale;
-      })
+  SectionTitle(text: Resource) {
+    Text(text)
+      .fontSize(12)
+      .fontColor($r('app.color.text_secondary'))
+      .width('100%')
+  }
+
+  @Builder
+  ChipHolder(label: string, active: boolean, onTap: () => void) {
+    Button(label)
+      .fontSize(13)
+      .height(34)
+      .layoutWeight(1)
+      .backgroundColor(active ? $r('app.color.accent') : $r('app.color.chip_bg'))
+      .fontColor(active ? $r('app.color.accent_on') : $r('app.color.text_primary'))
+      .onClick(onTap)
   }
 
   build() {
     NavDestination() {
       Scroll() {
         Column({ space: 18 }) {
-          Column({ space: 6 }) {
-            Text($r('app.string.settings_nickname'))
-              .fontSize(14)
-              .fontColor($r('app.color.text_secondary'))
-              .width('100%')
+          Column({ space: 8 }) {
+            this.SectionTitle($r('app.string.settings_nickname'))
             TextInput({ text: this.nickname })
               .height(44)
               .onChange((value: string) => {
                 this.nickname = value;
               })
           }
+          .width('100%')
 
-          Column({ space: 6 }) {
-            Text($r('app.string.settings_font'))
-              .fontSize(14)
-              .fontColor($r('app.color.text_secondary'))
-              .width('100%')
-            Row({ space: 10 }) {
-              this.ScaleButton(SCALE_S)
-              this.ScaleButton(SCALE_M)
-              this.ScaleButton(SCALE_L)
+          Column({ space: 8 }) {
+            this.SectionTitle($r('app.string.settings_angle'))
+            Row({ space: 8 }) {
+              this.ChipHolder('DEG', this.angleDegrees, () => {
+                this.angleDegrees = true;
+              })
+              this.ChipHolder('RAD', !this.angleDegrees, () => {
+                this.angleDegrees = false;
+              })
             }
             .width('100%')
           }
+          .width('100%')
 
-          Column({ space: 6 }) {
-            Text($r('app.string.settings_preview'))
-              .fontSize(14)
-              .fontColor($r('app.color.text_secondary'))
-              .width('100%')
-            Text($r('app.string.settings_preview_text'))
-              .fontSize(sizeOfScale(this.fontScale))
+          Column({ space: 8 }) {
+            this.SectionTitle($r('app.string.settings_decimals'))
+            Row({ space: 8 }) {
+              ForEach(DECIMAL_CHOICES, (choice: number) => {
+                this.ChipHolder(choice < 0 ? 'AUTO' : choice.toString(), this.decimals === choice, () => {
+                  this.decimals = choice;
+                })
+              }, (choice: number) => `dec-${choice}`)
+            }
+            .width('100%')
+          }
+          .width('100%')
+
+          Column({ space: 8 }) {
+            this.SectionTitle($r('app.string.settings_thousands'))
+            Toggle({ type: ToggleType.Switch, isOn: this.thousands })
+              .onChange((isOn: boolean) => {
+                this.thousands = isOn;
+              })
+          }
+          .width('100%')
+
+          Column({ space: 8 }) {
+            this.SectionTitle($r('app.string.settings_preview'))
+            Text(formatNumberText('1234567.891', this.decimals, this.thousands))
+              .fontSize(22)
+              .fontWeight(FontWeight.Medium)
               .fontColor($r('app.color.text_primary'))
               .width('100%')
+              .padding(14)
+              .backgroundColor($r('app.color.card_bg'))
+              .borderRadius(12)
           }
+          .width('100%')
 
           Button($r('app.string.settings_save'))
             .width('100%')

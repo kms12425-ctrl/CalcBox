@@ -2,6 +2,11 @@ import { curves } from '@kit.ArkUI';
 import { common } from '@kit.AbilityKit';
 import { EvalResult, canAppendDot, isLastCharNotDigit, tryEvaluate } from '../../utils/expression';
 import { HistoryEntry, MAX_HISTORY, loadHistory, saveHistory } from '../../utils/history';
+import { formatNumberText } from '../../utils/format';
+import {
+  DEFAULT_ANGLE_DEGREES, DEFAULT_DECIMALS, DEFAULT_THOUSANDS,
+  KEY_ANGLE_DEGREES, KEY_DECIMALS, KEY_THOUSANDS, loadBool, loadNumber
+} from '../../utils/settings';
 
 /**
  * 按键类别，决定点击后走哪条处理分支。
@@ -60,8 +65,12 @@ export struct Calculator {
   @State answer: ResourceStr = '';
   @State answerAnimate: boolean = false;
   @State history: HistoryEntry[] = [];
-  /** 三角函数按角度制还是弧度制计算 */
-  @State useDegrees: boolean = true;
+  /** 三角函数按角度制还是弧度制计算，来自设置页 */
+  @State useDegrees: boolean = DEFAULT_ANGLE_DEGREES;
+  /** 结果显示的小数位数，-1 表示自动 */
+  @State decimals: number = DEFAULT_DECIMALS;
+  /** 结果是否使用千分位 */
+  @State thousands: boolean = DEFAULT_THOUSANDS;
 
   /**
    * 键盘布局：首行 5 个功能键（含括号），其余 4 行 4 列。
@@ -115,6 +124,10 @@ export struct Calculator {
 
   aboutToAppear(): void {
     this.history = loadHistory(this.historyContext());
+    const context: common.Context = this.historyContext();
+    this.useDegrees = loadBool(context, KEY_ANGLE_DEGREES, DEFAULT_ANGLE_DEGREES);
+    this.decimals = loadNumber(context, KEY_DECIMALS, DEFAULT_DECIMALS);
+    this.thousands = loadBool(context, KEY_THOUSANDS, DEFAULT_THOUSANDS);
   }
 
   private historyContext(): common.Context {
@@ -272,6 +285,17 @@ export struct Calculator {
     }
   }
 
+  /**
+   * 按设置格式化结果；「无法计算」这类资源对象原样返回。
+   */
+  private formattedAnswer(): ResourceStr {
+    const raw: ResourceStr = this.answer;
+    if (typeof raw !== 'string') {
+      return raw;
+    }
+    return formatNumberText(raw, this.decimals, this.thousands);
+  }
+
   @Builder
   KeyButton(key: KeyDef) {
     Button(key.label, { type: ButtonType.Circle, stateEffect: true })
@@ -351,7 +375,7 @@ export struct Calculator {
       .justifyContent(FlexAlign.End)
 
       Row() {
-        Text(this.answer)
+        Text(this.formattedAnswer())
           .fontSize(this.answerAnimate ? 50 : 30)
           .fontWeight(FontWeight.Medium)
           .fontColor(this.answerAnimate ? $r('app.color.text_primary') : $r('app.color.text_tertiary'))
