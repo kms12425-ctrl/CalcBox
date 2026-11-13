@@ -243,6 +243,26 @@
     {
       "name": "percent_invalid",
       "value": "Cannot compute, check the input or zero divisor"
+    },
+    {
+      "name": "tool_rmb",
+      "value": "RMB in words"
+    },
+    {
+      "name": "rmb_input",
+      "value": "Amount"
+    },
+    {
+      "name": "rmb_result",
+      "value": "Uppercase"
+    },
+    {
+      "name": "rmb_invalid",
+      "value": "Enter a non-negative amount within 999999999999.99"
+    },
+    {
+      "name": "rmb_hint",
+      "value": "Supports up to 999,999,999,999.99, two decimals"
     }
   ]
 }

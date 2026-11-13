@@ -243,6 +243,26 @@
     {
       "name": "percent_invalid",
       "value": "无法计算，请检查输入或除数为 0"
+    },
+    {
+      "name": "tool_rmb",
+      "value": "金额大写"
+    },
+    {
+      "name": "rmb_input",
+      "value": "金额"
+    },
+    {
+      "name": "rmb_result",
+      "value": "大写"
+    },
+    {
+      "name": "rmb_invalid",
+      "value": "请输入 0 到 999999999999.99 之间的金额"
+    },
+    {
+      "name": "rmb_hint",
+      "value": "支持到万亿位，最多两位小数，结果可长按复制"
     }
   ]
 }
