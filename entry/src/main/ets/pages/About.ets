@@ -69,7 +69,31 @@ export struct About {
           this.DividerLine()
           this.InfoRow($r('app.string.about_deps'), 'hypium 1.0.29 / hamock 1.0.0')
           this.DividerLine()
-          this.InfoRow($r('app.string.about_pages'), 'Home + Calculator + Settings + About')
+          this.InfoRow($r('app.string.about_pages'), 'Home + 6 tools + Settings + About')
+
+          Text($r('app.string.about_licenses'))
+            .fontSize(13)
+            .fontColor($r('app.color.text_secondary'))
+            .width('100%')
+            .margin({ top: 14 })
+
+          Text('hypium 1.0.29 · Apache-2.0')
+            .fontSize(13)
+            .fontColor($r('app.color.text_primary'))
+            .width('100%')
+            .padding({ top: 6 })
+
+          Text('hamock 1.0.0 · Apache-2.0')
+            .fontSize(13)
+            .fontColor($r('app.color.text_primary'))
+            .width('100%')
+            .padding({ top: 4 })
+
+          Text('HarmonyCalc · MIT')
+            .fontSize(13)
+            .fontColor($r('app.color.text_primary'))
+            .width('100%')
+            .padding({ top: 4 })
 
           Text($r('app.string.about_footer'))
             .fontSize(12)

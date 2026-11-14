@@ -275,6 +275,10 @@
     {
       "name": "settings_thousands",
       "value": "Thousands separator"
+    },
+    {
+      "name": "about_licenses",
+      "value": "Open source licenses"
     }
   ]
 }

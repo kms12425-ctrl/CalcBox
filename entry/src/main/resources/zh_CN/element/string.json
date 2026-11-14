@@ -275,6 +275,10 @@
     {
       "name": "settings_thousands",
       "value": "千分位"
+    },
+    {
+      "name": "about_licenses",
+      "value": "开源许可"
     }
   ]
 }
