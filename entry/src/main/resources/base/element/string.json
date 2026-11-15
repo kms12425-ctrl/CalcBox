@@ -53,16 +53,8 @@
       "value": "Nickname"
     },
     {
-      "name": "settings_font",
-      "value": "Font size"
-    },
-    {
       "name": "settings_preview",
       "value": "Preview"
-    },
-    {
-      "name": "settings_preview_text",
-      "value": "A paragraph to preview the current font size"
     },
     {
       "name": "settings_save",
