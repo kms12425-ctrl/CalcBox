@@ -40,16 +40,40 @@
 
 用 DevEco Studio 打开工程根目录，在 **Project Structure → Signing Configs** 配置自动签名后运行 `entry` 模块。
 
-### 关于签名
+### 应用签名（安装到真机的前提）
 
-工程未附带签名材料（`signingConfigs` 为空），默认构建产物是 `entry-default-unsigned.hap`，**无法直接安装到真机**。开启方式：
+未配置签名时，构建产物是 `entry-default-unsigned.hap`，**无法安装到真机**。签名证书由华为签发，必须本人在 DevEco Studio 中完成一次配置。
 
-1. 在 DevEco Studio 中登录华为账号；
-2. 打开 `File → Project Structure → Signing Configs`，勾选 `Automatically generate signature`；
-3. IDE 会把生成好的 `signingConfigs` 写回 `build-profile.json5`，此后构建即产出已签名 HAP。
+**路线 A：自动签名（推荐）**
 
-签名材料含私钥，请勿提交到仓库。
+前提：华为开发者账号、已开启 USB 调试的设备（或模拟器）。
 
+1. `hdc list targets` 确认设备已连接；
+2. 在 DevEco Studio 中登录华为账号；
+3. 打开 `File → Project Structure → Signing Configs`，勾选 `Automatically generate signature`；
+4. IDE 会把 `signingConfigs` 与 product 的 `signingConfig` 写回 `build-profile.json5`，材料缓存到 `~/.ohos/config`；
+5. 重新构建，产物变为 `entry-default-signed.hap`。
+
+**路线 B：手动申请（正式发布）**
+
+1. AppGallery Connect 创建应用，包名填 `com.example.calcbox`；
+2. 用 `keytool` 生成密钥与 CSR，上传 CSR 申请发布证书；
+3. 在 AGC 创建 Profile（调试 Profile 需绑定设备 UDID），下载 `.p7b`；
+4. 在 Signing Configs 中手动填写 `.p12` / `.p7b` / 证书 / 别名与密码。
+
+**验证签名**
+
+```powershell
+.\tools\verify-hap.ps1
+```
+
+脚本调用 SDK 自带的 `hap-sign-tool` 校验签名块，通过时退出码 0，未签名或证书不匹配时退出码 1，并打印常见原因。
+
+**注意**
+
+- 签名材料含私钥，已在 `.gitignore` 中排除（`*.p12`、`*.cer`、`*.p7b`、`signing/` 等），**不要提交**；
+- 包名必须与 Profile 中的 `bundle-name` 一致，否则安装会签名校验失败；
+- SDK 自带的 `OpenHarmony.p12` 测试证书只适用于 OpenHarmony 设备与部分模拟器，HarmonyOS 真机信任华为根证书，无法通过校验。
 ### 单元测试
 
 ```powershell
@@ -91,6 +115,8 @@ entry/                     主模块（HAP）
   src/main/resources/      base / en_US / zh_CN / dark 等资源
   src/test/                本地单元测试
   src/ohosTest/            设备侧测试模块
+tools/
+  verify-hap.ps1           HAP 签名校验脚本（hap-sign-tool 封装）
 ```
 
 ## 协议

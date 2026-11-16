@@ -10,3 +10,10 @@
 /.clang-tidy
 **/.test
 /.appanalyzer
+# 签名材料（含私钥与证书，禁止入库）
+*.p12
+*.cer
+*.p7b
+*.csr
+*.key
+signing/
