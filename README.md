@@ -1,6 +1,6 @@
-# HarmonyCalc
+# 算盒 · CalcBox
 
-一个 HarmonyOS NEXT 工具箱应用：7 个日常小工具 + 设置 + 关于，全部离线可用，无需任何网络与权限。
+一个 HarmonyOS NEXT 离线工具箱（算盒 / CalcBox）：7 个日常小工具 + 设置 + 关于，全部离线可用，无需任何网络与权限。
 
 - 语言：ArkTS / ArkUI 声明式开发，Stage 模型
 - 兼容版本 `5.0.0(12)`，编译目标 `6.1.0(23)`，支持 phone / tablet / 2in1

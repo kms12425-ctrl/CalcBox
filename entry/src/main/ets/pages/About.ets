@@ -89,7 +89,7 @@ export struct About {
             .width('100%')
             .padding({ top: 4 })
 
-          Text('HarmonyCalc · MIT')
+          Text('CalcBox · MIT')
             .fontSize(13)
             .fontColor($r('app.color.text_primary'))
             .width('100%')
